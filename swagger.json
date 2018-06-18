@@ -1,0 +1,274 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Marina Api",
+      "description": "Rest Api Created For Marina Project",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:3000",
+    "basePath": "/api",
+    "tags": [
+      {
+        "name": "Users Controller",
+        "description": ""
+      },
+      {
+        "name": "Auth Controller",
+        "description": ""
+      }
+    ],
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/users": {
+        "post": {
+          "tags": [
+            "Users Controller"
+          ],
+          "description": "Create new user in system",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "description": "User that we want to create",
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "New user is created",
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        },
+        "get": {
+          "tags": [
+            "Users Controller"
+          ],
+          "summary": "Get all users in system",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            }
+          }
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "tags": [
+            "Auth Controller"
+          ],
+          "description": "Login into system",
+          "parameters": [
+            {
+              "name": "Login",
+              "in": "body",
+              "description": "User that we want to login",
+              "schema": {
+                "$ref": "#/definitions/LoginModel"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Login",
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            },
+            "500": {
+              "description": "Server Error | Email and Password are required."
+            },
+            "401": {
+              "description": "Wrong Credentials"
+            }
+          }
+        }
+      },
+      "/auth/signup": {
+        "post": {
+          "tags": [
+            "Auth Controller"
+          ],
+          "description": "Create new user",
+          "parameters": [
+            {
+              "name": "Signup",
+              "in": "body",
+              "description": "User that we want to create",
+              "schema": {
+                "$ref": "#/definitions/SignupModel"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully Created",
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            },
+            "500": {
+              "description": "Server Error | Email Exists | Email and Password are required."
+            }
+          }
+        }
+      },
+      "/auth/forgotpassword": {
+        "post": {
+          "tags": [
+            "Auth Controller"
+          ],
+          "description": "Forgot Password",
+          "parameters": [
+            {
+              "name": "Forgot Password",
+              "in": "body",
+              "description": "User that forgot password",
+              "schema": {
+                "$ref": "#/definitions/ForgotPasswordModel"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully Sent Email"
+            },
+            "500": {
+              "description": "Server Error | No User Found With Given Email | Email is required."
+            }
+          }
+        }
+      },
+      "/auth/resetpassword/{token}": {
+        "get": {
+          "tags": [
+            "Auth Controller"
+          ],
+          "description": "Reset Password",
+          "parameters": [
+            {
+              "name": "Token",
+              "in": "path",
+              "required": true,
+              "description": "Reset Password Token",
+              "schema": {
+                "type": "integer",
+                "required": true
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully Changed Password"
+            },
+            "500": {
+              "description": "Server Error | Token invalid or Expired | Token Not Found | Unknown Error"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "LoginModel": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "SignupModel": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "ForgotPasswordModel": {
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "uniqueItems": true
+          }
+        }
+      },
+      "User": {
+        "required": [
+          "email",
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "email": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "Users": {
+        "type": "array",
+        "$ref": "#/definitions/User"
+      }
+    }
+  }

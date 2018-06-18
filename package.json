@@ -1,0 +1,25 @@
+{
+  "name": "marina-api",
+  "version": "1.0.0",
+  "description": "Marina Rest Api",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ebrar Islami",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^2.0.1",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.2",
+    "morgan": "^1.9.0",
+    "nodemailer": "^4.6.5",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "redis": "^2.8.0",
+    "sequelize": "^4.37.10",
+    "swagger-ui-express": "^3.0.9"
+  }
+}
