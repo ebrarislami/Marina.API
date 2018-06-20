@@ -1,8 +1,8 @@
 const redis = require('redis');
-const rclient = redis.createClient();
+const redisClient = redis.createClient(6379, '192.168.99.100');
 
-rclient.on('connect', function (err, response) {
+redisClient.on('connect', function (err, response) {
     console.log("Connected to redis");
 });
 
-module.exports = rclient;
+module.exports = redisClient;

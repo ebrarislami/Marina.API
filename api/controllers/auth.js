@@ -35,7 +35,8 @@ exports.signup = async(req, res, next) => {
                     }).then( createdUser => {
                         const token = jwt.sign({
                             email: createdUser.email,
-                            userId: createdUser.id
+                            userId: createdUser.id,
+                            role: "User",
                         }, 'secret',
                         {
                             expiresIn: "24h"
@@ -44,6 +45,7 @@ exports.signup = async(req, res, next) => {
                             token: token,
                             id: createdUser.id,
                             email: createdUser.email,
+                            role: "User"
                         };
                         res.status(200).json(user);
                     }).catch(e => {
@@ -60,7 +62,7 @@ exports.signup = async(req, res, next) => {
 
 
 exports.login = async(req, res, next) => {
-    const { User } = models;
+    const { User, MarinaRoles } = models;
     const { email, password } = req.body;
     if (!email || !password) {
         return error(res, 'Email and Password are required.');
@@ -72,6 +74,7 @@ exports.login = async(req, res, next) => {
             return error(res, 'Auth Failed', 401);
         }
         else {
+            const marinaUser = await MarinaRoles.findOne({where: {userId: user.id}});
             bcrypt.compare(password, user.password, (err, result) => {
                 if (err) {
                     return error(res, 'Auth Failed', 401);
@@ -80,6 +83,7 @@ exports.login = async(req, res, next) => {
                     const token = jwt.sign({
                         email: user.email,
                         userId: user.id,
+                        role: marinaUser ? marinaUser.role : "User",
                     }, 'secret',
                     {
                         expiresIn: "24h"
@@ -91,7 +95,7 @@ exports.login = async(req, res, next) => {
                         token: token,
                         email: email,
                         id: user.id,
-                        role: user.role,
+                        role: marinaUser ? marinaUser.role : "User",
                         expiresIn: decodedToken.exp
                     });
                 }

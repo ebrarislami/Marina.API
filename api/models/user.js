@@ -13,6 +13,7 @@ const user = (sequelize, DataTypes) => {
             }
         },
         password: {
+            
             type: DataTypes.STRING,
         },
         role: {
@@ -29,6 +30,7 @@ const user = (sequelize, DataTypes) => {
   
     User.associate = models => {
       User.hasMany(models.Yacht);
+      User.belongsToMany(models.Marina, { through: models.MarinaRoles });
     };
   
     return User;

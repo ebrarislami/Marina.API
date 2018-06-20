@@ -10,11 +10,11 @@ const marina = (sequelize, DataTypes) => {
         },
     });
   
-    // Marina.associate = models => {
-    //     Marina.belongsTo(models.User, {
-    //         foreignKey: 'userId'
-    //     });
-    // };
+    
+    Marina.associate = models => {
+        Marina.hasMany(models.Pedestal);
+        Marina.belongsToMany(models.User, { through: models.MarinaRoles });
+    };
   
     return Marina;
   };

@@ -3,7 +3,11 @@ const sequelize = require('../../db');
 
 const models = {
     User: sequelize.import('./user'),
-    Yacht: sequelize.import('./yacht')
+    Yacht: sequelize.import('./yacht'),
+    Marina: sequelize.import('./marina'),
+    MarinaRoles: sequelize.import('./marina_roles'),
+    Pedestal: sequelize.import('./pedestal'),
+    Berth: sequelize.import('./berth')
 }
 
 
