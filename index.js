@@ -5,6 +5,7 @@ const Sequelize = require('sequelize');
 const AuthRoutes = require('./api/routes/auth');
 const UserRoutes = require('./api/routes/user');
 const PedestalRoutes = require('./api/routes/pedestal');
+const MarinaRoutes = require('./api/routes/marina');
 const sequelize = require('./db');
 const models = require('./api/models');
 const app = express();
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', AuthRoutes);
 app.use('/api/user', UserRoutes);
 app.use('/api/pedestals', PedestalRoutes);
+app.use('/api/marina', MarinaRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
