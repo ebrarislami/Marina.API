@@ -83,6 +83,7 @@ exports.login = async(req, res, next) => {
                     const token = jwt.sign({
                         email: user.email,
                         userId: user.id,
+                        marinaId: marinaUser ? marinaUser.marinaId : null,
                         role: marinaUser ? marinaUser.role : "User",
                     }, 'secret',
                     {
@@ -95,6 +96,7 @@ exports.login = async(req, res, next) => {
                         token: token,
                         email: email,
                         id: user.id,
+                        marinaId: marinaUser ? marinaUser.marinaId : null,
                         role: marinaUser ? marinaUser.role : "User",
                         expiresIn: decodedToken.exp
                     });
