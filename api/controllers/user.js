@@ -1,14 +1,13 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const models = require('../models');
 const error = require('../helpers/error-handler');
-const mailSender = require('../helpers/email-sender');
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
-var redis = require('../../redis');
 
 
-
-exports.getUsers = (req, res, next) => {
-    res.status(200).json();
+exports.getUsers = async(req, res, next) => {
+    const { User, Yacht } = models;
+    try {
+        const users = await User.findAll({include: [Yacht]});
+        res.status(200).json(users);
+    } catch(err) {
+        return error(res, err.message);
+    }
 };

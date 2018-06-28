@@ -13,7 +13,7 @@ const user = (sequelize, DataTypes) => {
             }
         },
         password: {
-            
+
             type: DataTypes.STRING,
         },
         role: {
@@ -27,13 +27,18 @@ const user = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
         }
     });
-  
+
     User.associate = models => {
-      User.hasMany(models.Yacht);
-      User.belongsToMany(models.Marina, { through: models.MarinaRoles });
+        User.hasMany(models.Reservation);
+        User.belongsToMany(models.Yacht, {
+            through: models.YachtOwners
+        });
+        User.belongsToMany(models.Marina, {
+            through: models.MarinaRoles
+        });
     };
-  
+
     return User;
-  };
-  
-  module.exports = user;
+};
+
+module.exports = user;

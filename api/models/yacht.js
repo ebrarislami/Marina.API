@@ -9,14 +9,13 @@ const yacht = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
         },
     });
-  
+
     Yacht.associate = models => {
-        Yacht.belongsTo(models.User, {
-            foreignKey: 'userId'
-        });
+        Yacht.hasMany(models.Reservation);
+        Yacht.belongsToMany(models.User, { through: models.YachtOwners });
     };
-  
+
     return Yacht;
-  };
-  
-  module.exports = yacht;
+};
+
+module.exports = yacht;

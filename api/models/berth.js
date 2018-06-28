@@ -12,6 +12,7 @@ const berth = (sequelize, DataTypes) => {
   
     
     Berth.associate = models => {
+        Berth.hasMany(models.Reservation);
         Berth.belongsTo(models.Pedestal, {
             foreignKey: 'pedestalId'
         });

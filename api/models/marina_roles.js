@@ -7,19 +7,19 @@ const marinaRoles = (sequelize, DataTypes) => {
         },
         role: {
             type: DataTypes.ENUM,
-            values: ['Admin', 'Staff'], 
-            defaultValue: 'Staff', 
+            values: ['Admin', 'Staff'],
+            defaultValue: 'Staff',
             allowNull: false
         }
     });
-  
+
     // Marina.associate = models => {
     //     Marina.belongsTo(models.User, {
     //         foreignKey: 'userId'
     //     });
     // };
-  
+
     return MarinaRoles;
-  };
-  
-  module.exports = marinaRoles;
+};
+
+module.exports = marinaRoles;
