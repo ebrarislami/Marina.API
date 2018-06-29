@@ -13,7 +13,6 @@ const app = express();
 
 const path = require('path')
 const PORT = process.env.PORT || 3000
-console.log(process.env.TIMES)
 const swaggerUi = require('swagger-ui-express'),
     swaggerDocument = require('./swagger.json');
 
