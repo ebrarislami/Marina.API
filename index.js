@@ -8,10 +8,12 @@ const PedestalRoutes = require('./api/routes/pedestal');
 const MarinaRoutes = require('./api/routes/marina');
 const sequelize = require('./db');
 const models = require('./api/models');
+require('dotenv').config()
 const app = express();
 
-const port = process.env.PORT || 3000;
-
+const path = require('path')
+const PORT = process.env.PORT || 3000
+console.log(process.env.TIMES)
 const swaggerUi = require('swagger-ui-express'),
     swaggerDocument = require('./swagger.json');
 
@@ -54,12 +56,12 @@ app.use((error, req, res, next) => {
     });
 });
 
-//app.listen(3000, () => console.log('Listening on port 3000!'))
+app.listen(PORT, () => console.log('Server is running'))
 
-models.sequelize.sync().then(() => {
-    app.listen(3000, () => {
-      console.log('Your Server is up and running');
-    });
-});
+// models.sequelize.sync().then(() => {
+//     app.listen(PORT, () => {
+//       console.log('Your Server is up and running');
+//     });
+// });
 
 module.exports = app;
