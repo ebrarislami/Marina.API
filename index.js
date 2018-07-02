@@ -6,6 +6,7 @@ const AuthRoutes = require('./api/routes/auth');
 const UserRoutes = require('./api/routes/user');
 const PedestalRoutes = require('./api/routes/pedestal');
 const MarinaRoutes = require('./api/routes/marina');
+const TestRoutes = require('./api/routes/test');
 const sequelize = require('./db');
 const models = require('./api/models');
 require('dotenv').config()
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', AuthRoutes);
 app.use('/api/user', UserRoutes);
 app.use('/api/pedestals', PedestalRoutes);
+app.use('/api/test', TestRoutes);
 app.use('/api/marina', MarinaRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -55,12 +57,12 @@ app.use((error, req, res, next) => {
     });
 });
 
-app.listen(PORT, () => console.log('Server is running'))
+// app.listen(PORT, () => console.log('Server is running'))
 
-// models.sequelize.sync().then(() => {
-//     app.listen(PORT, () => {
-//       console.log('Your Server is up and running');
-//     });
-// });
+models.sequelize.sync().then(() => {
+    app.listen(PORT, () => {
+      console.log('Server is up and running');
+    });
+});
 
 module.exports = app;

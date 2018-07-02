@@ -10,7 +10,8 @@ const models = {
     Pedestal: sequelize.import('./pedestal'),
     Berth: sequelize.import('./berth'),
     Reservation: sequelize.import('./reservation'),
-    Docking: sequelize.import('./docking')
+    Docking: sequelize.import('./docking'),
+    Test: sequelize.import('./test')
 }
 
 

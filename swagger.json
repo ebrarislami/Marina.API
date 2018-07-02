@@ -19,6 +19,10 @@
       {
         "name": "Auth Controller",
         "description": ""
+      },
+      {
+        "name": "Test Controller",
+        "description": ""
       }
     ],
     "schemes": [
@@ -200,6 +204,68 @@
             }
           }
         }
+      },
+      "/test": {
+        "post": {
+          "tags": [
+            "Test Controller"
+          ],
+          "description": "Create test water and electricity consumption",
+          "parameters": [
+            {
+              "name": "Test",
+              "in": "body",
+              "description": "Test that we want to create",
+              "schema": {
+                "$ref": "#/definitions/TestModel"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully Created",
+              "schema": {
+                "$ref": "#/definitions/Test"
+              }
+            },
+            "500": {
+              "description": "Server Error"
+            }
+          }
+        },
+        "get": {
+          "tags": [
+            "Test Controller"
+          ],
+          "description": "Get all test water and electricity consumption data",
+          "parameters": [
+            {
+              "name": "Test",
+              "in": "body",
+              "description": "Test that we want to retreive",
+              "schema": {
+                "$ref": "#/definitions/TestModel"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully Get",
+              "schema": {
+                "$ref": "#/definitions/Test"
+              }
+            },
+            "500": {
+              "description": "Server Error"
+            }
+          }
+        }
       }
     },
     "definitions": {
@@ -241,6 +307,38 @@
           "email": {
             "type": "string",
             "uniqueItems": true
+          }
+        }
+      },
+      "TestModel": {
+        "required": [
+          "water",
+          "electricity"
+        ],
+        "properties": {
+          "water": {
+            "type": "number"
+          },
+          "electricity": {
+            "type": "number"
+          }
+        }
+      },
+      "Test": {
+        "required": [
+          "water",
+          "electricity"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "water": {
+            "type": "number"
+          },
+          "electricity": {
+            "type": "number"
           }
         }
       },
