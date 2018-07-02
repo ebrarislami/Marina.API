@@ -9,7 +9,7 @@
         "url": "https://opensource.org/licenses/MIT"
       }
     },
-    "host": "localhost:3000",
+    "host": "https://guarded-everglades-83614.herokuapp.com/",
     "basePath": "/api",
     "tags": [
       {
