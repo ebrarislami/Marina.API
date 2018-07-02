@@ -29,6 +29,6 @@ exports.postTest = async(req, res, next) => {
         };
         res.status(200).json(test);
     }).catch(err => {
-        return error(res, e.message);
+        return error(res, err.message);
     })
 };

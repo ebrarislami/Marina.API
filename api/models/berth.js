@@ -8,6 +8,18 @@ const berth = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
         },
+        isAvailable: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        isElectricityEnabled: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        isWaterEnabled: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        }
     });
   
     

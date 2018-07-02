@@ -9,6 +9,6 @@ var redis = require('../../redis');
 
 
 
-exports.getUsers = (req, res, next) => {
+exports.getMarinas = (req, res, next) => {
     res.status(200).json();
 };

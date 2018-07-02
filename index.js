@@ -4,7 +4,6 @@ const morgan = require('morgan');
 const Sequelize = require('sequelize');
 const AuthRoutes = require('./api/routes/auth');
 const UserRoutes = require('./api/routes/user');
-const PedestalRoutes = require('./api/routes/pedestal');
 const MarinaRoutes = require('./api/routes/marina');
 const TestRoutes = require('./api/routes/test');
 const sequelize = require('./db');
@@ -36,7 +35,6 @@ app.use((req, res, next) => {
 
 app.use('/api/auth', AuthRoutes);
 app.use('/api/user', UserRoutes);
-app.use('/api/pedestals', PedestalRoutes);
 app.use('/api/test', TestRoutes);
 app.use('/api/marina', MarinaRoutes);
 
