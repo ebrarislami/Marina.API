@@ -1,14 +1,25 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const models = require('../models');
 const error = require('../helpers/error-handler');
-const mailSender = require('../helpers/email-sender');
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
-var redis = require('../../redis');
 
+exports.getMarinas = async(req, res, next) => {
+    const { Marina, MarinaRoles, User } = models;
+    try {
+        const marinas = await Marina.findAll({include: [ User ]});
+        res.status(200).json(marinas);
+    }
+    catch(err) {
+        return error(res, err.message);
+    }
+};
 
-
-exports.getMarinas = (req, res, next) => {
-    res.status(200).json();
+exports.getMarina = async(req, res, next) => {
+    const { marinaId } = req.params;
+    const { Marina, MarinaRoles, User, Pedestal, Berth } = models;
+    try {
+        const marinas = await Marina.findAll({include: [ Pedestal ]}, {where: {id: marinaId}});
+        res.status(200).json(marinas);
+    }
+    catch(err) {
+        return error(res, err.message);
+    }
 };

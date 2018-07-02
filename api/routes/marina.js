@@ -7,6 +7,7 @@ const isAdmin = require('../middleware/check-admin');
 const isAuth = require('../middleware/check-auth');
 
 router.get('/', MarinaController.getMarinas);
+router.get('/:marinaId', MarinaController.getMarina);
 router.get('/:marinaId/pedestals', isAuth, PedestalController.getAllMarinaPedestals);
 router.post('/:marinaId/pedestals', isAuth, PedestalController.createMarinaPedestal);
 router.get('/:marinaId/utilities', PedestalController.getAllMarinaPedestals);

@@ -9,11 +9,23 @@
         "url": "https://opensource.org/licenses/MIT"
       }
     },
-    "host": "https://guarded-everglades-83614.herokuapp.com/",
+    "host": "guarded-everglades-83614.herokuapp.com",
     "basePath": "/api",
     "tags": [
       {
         "name": "Users Controller",
+        "description": ""
+      },
+      {
+        "name": "Marina Controller",
+        "description": ""
+      },
+      {
+        "name": "Pedestal Controller",
+        "description": ""
+      },
+      {
+        "name": "Berth Controller",
         "description": ""
       },
       {
@@ -26,7 +38,8 @@
       }
     ],
     "schemes": [
-      "http"
+      "http",
+      "https"
     ],
     "consumes": [
       "application/json"
@@ -74,6 +87,130 @@
               "schema": {
                 "$ref": "#/definitions/Users"
               }
+            }
+          }
+        }
+      },
+      "/marina": {
+        "get": {
+          "tags": [
+            "Marina Controller"
+          ],
+          "description": "Get all marinas",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Get",
+              "schema": {
+                "$ref": "#/definitions/Marinas"
+              }
+            },
+            "500": {
+              "description": "Server Error"
+            }
+          }
+        }
+      },
+      "/marina/{marinaId}/pedestals": {
+        "get": {
+          "tags": [
+            "Pedestal Controller"
+          ],
+          "parameters": [
+            {
+              "name": "marinaId",
+              "in": "path",
+              "required": true,
+              "description": "Marina Id",
+              "schema": {
+                "type": "string",
+                "required": true
+              }
+            }
+          ],
+          "description": "Get all marina pedestals",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Get Pedestal",
+              "schema": {
+                "$ref": "#/definitions/Pedestals"
+              }
+            },
+            "500": {
+              "description": "Server Error"
+            }
+          }
+        }
+      },
+      "/marina/{marinaId}/pedestals/{pedestalId}/berths/{berthId}/toggleWater": {
+        "get": {
+          "tags": [
+            "Berth Controller"
+          ],
+          "parameters": [
+            {
+              "name": "marinaId",
+              "in": "path",
+              "required": true,
+              "description": "Marina Id",
+              "schema": {
+                "type": "string",
+                "required": true
+              }
+            }
+          ],
+          "description": "Get all marina pedestals",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Get Pedestal",
+              "schema": {
+                "$ref": "#/definitions/Pedestals"
+              }
+            },
+            "500": {
+              "description": "Server Error"
+            }
+          }
+        }
+      },
+      "/marina/{marinaId}/pedestals/{pedestalId}/berths/{berthId}/toggleElectricity": {
+        "get": {
+          "tags": [
+            "Berth Controller"
+          ],
+          "parameters": [
+            {
+              "name": "marinaId",
+              "in": "path",
+              "required": true,
+              "description": "Marina Id",
+              "schema": {
+                "type": "string",
+                "required": true
+              }
+            }
+          ],
+          "description": "Get all marina pedestals",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Get Pedestal",
+              "schema": {
+                "$ref": "#/definitions/Pedestals"
+              }
+            },
+            "500": {
+              "description": "Server Error"
             }
           }
         }
@@ -364,9 +501,110 @@
           }
         }
       },
+      "Pedestal": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "marinaId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "PedestalModel": {
+        "required": [
+          "name",
+          "type",
+          "marinaId"
+        ],
+        "properties": {
+          "marinaId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "Marina": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "MarinaModel": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Berth": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "isWaterEnabled": {
+            "type": "boolean"
+          },
+          "isElectricityEnabled": {
+            "type": "boolean"
+          },
+          "pedestalId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "BerthModel": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "Users": {
         "type": "array",
         "$ref": "#/definitions/User"
+      },
+      "Berths": {
+        "type": "array",
+        "$ref": "#/definitions/Berth"
+      },
+      "Pedestals": {
+        "type": "array",
+        "$ref": "#/definitions/Pedestal"
+      },
+      "Marinas": {
+        "type": "array",
+        "$ref": "#/definitions/Marina"
       }
     }
   }
