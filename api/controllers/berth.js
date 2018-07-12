@@ -6,7 +6,7 @@ const mailSender = require('../helpers/email-sender');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 var redis = require('../../redis');
-
+const Connection = require('../models/connections');
 
 
 exports.getPedestalBerths = async(req, res, next) => {
@@ -41,6 +41,10 @@ exports.toggleBerthElectricity = async(req, res, next) => {
         if (!berth) {
             
         } else {
+            Connection.findOne({pedestal_id: 1}, (err, result) => {
+                if (err) throw err;
+                console.log(result);
+            });
             const isElectricityEnabled = !berth.isElectricityEnabled;
             berth.isElectricityEnabled = isElectricityEnabled;
             Berth.update({isElectricityEnabled: isElectricityEnabled}, { where: {id: berthId}}).then(result => {

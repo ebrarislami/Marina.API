@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const Sequelize = require('sequelize');
 const sequelize = require('./db');
+const mongo = require('./mongodb');
 const models = require('./api/models');
 require('dotenv').config()
 // app.set('socketio', io);
