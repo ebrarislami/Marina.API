@@ -7,7 +7,7 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 var redis = require('../../redis');
 const Connection = require('../models/connections');
-
+const client = require('../../mqtt');
 
 exports.getPedestalBerths = async(req, res, next) => {
     const { pedestalId } = req.params;
@@ -41,12 +41,9 @@ exports.toggleBerthElectricity = async(req, res, next) => {
         if (!berth) {
             
         } else {
-            Connection.findOne({pedestal_id: 1}, (err, result) => {
-                if (err) throw err;
-                console.log(result);
-            });
             const isElectricityEnabled = !berth.isElectricityEnabled;
             berth.isElectricityEnabled = isElectricityEnabled;
+            client.publish(berth.id, isElectricityEnabled ? 'eOn' : 'eOff')
             Berth.update({isElectricityEnabled: isElectricityEnabled}, { where: {id: berthId}}).then(result => {
                 res.status(200).json(berth);
             }).catch(err => {
@@ -68,6 +65,7 @@ exports.toggleBerthWater = async(req, res, next) => {
             res.status(404).json();
         } else {
             const isWaterEnabled = !berth.isWaterEnabled;
+            client.publish(berth.id, isWaterEnabled ? 'wOn' : 'wOff')
             berth.isWaterEnabled = isWaterEnabled;
             Berth.update({isWaterEnabled: isWaterEnabled}, { where: {id: berthId}}).then(result => {
                 res.status(200).json(berth);

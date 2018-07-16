@@ -9,6 +9,7 @@ const redis = require('../../redis');
 
 exports.waterOn = async(req, res, next) => {
     io.sockets.emit('water',{state: 'wOn'});
+    // io.sockets.emit('join', {pedestal_id: 'dsadsadsadsa'});
     res.status(200).json();
 };
  

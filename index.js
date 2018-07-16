@@ -34,14 +34,15 @@ app.use((req, res, next) => {
     next();
 });
 
+const client = require('./mqtt');
+const io = require('./socket').listen(server);
+
 const AuthRoutes = require('./api/routes/auth');
 const UserRoutes = require('./api/routes/user');
 const MarinaRoutes = require('./api/routes/marina');
 const TestRoutes = require('./api/routes/test');
 
-const io = require('./socket').listen(server)
-
-require('./api/routes/index')(app,io);
+require('./api/routes/index')(app, io);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
