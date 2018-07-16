@@ -50,7 +50,8 @@ exports.getAllMarinaPedestals = async(req, res, next) => {
     const { marinaId } = req.params;
     const { Pedestal, Berth } = models;
     try {
-        const pedestals = await Pedestal.findAll({where: {marinaId: marinaId}, include: [Berth], order: [['updatedAt', 'DESC']]});
+        const pedestals = await Pedestal.findAll({where: {marinaId: marinaId}, include: [{model: Berth, order: [['id', 'DESC']]}]   
+            ,order: [['createdAt', 'DESC']]});
         res.status(200).json(pedestals);
     }
     catch(err) {

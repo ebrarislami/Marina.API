@@ -43,7 +43,11 @@ exports.toggleBerthElectricity = async(req, res, next) => {
         } else {
             const isElectricityEnabled = !berth.isElectricityEnabled;
             berth.isElectricityEnabled = isElectricityEnabled;
-            client.publish(berth.id, isElectricityEnabled ? 'eOn' : 'eOff')
+            const obj = {
+                electricity: isElectricityEnabled ? 'On' : 'Off',
+            };
+            const buf = Buffer.from(JSON.stringify(obj));
+            client.publish(berth.id, buf)
             Berth.update({isElectricityEnabled: isElectricityEnabled}, { where: {id: berthId}}).then(result => {
                 res.status(200).json(berth);
             }).catch(err => {
@@ -54,7 +58,7 @@ exports.toggleBerthElectricity = async(req, res, next) => {
     catch(err) {
         return error(res, err.message);
     }
-} 
+}
 
 exports.toggleBerthWater = async(req, res, next) => {
     const { berthId } = req.params;
@@ -65,7 +69,11 @@ exports.toggleBerthWater = async(req, res, next) => {
             res.status(404).json();
         } else {
             const isWaterEnabled = !berth.isWaterEnabled;
-            client.publish(berth.id, isWaterEnabled ? 'wOn' : 'wOff')
+            const obj = {
+                water: isWaterEnabled ? 'On' : 'Off',
+            };
+            const buf = Buffer.from(JSON.stringify(obj));
+            client.publish(berth.id, buf)
             berth.isWaterEnabled = isWaterEnabled;
             Berth.update({isWaterEnabled: isWaterEnabled}, { where: {id: berthId}}).then(result => {
                 res.status(200).json(berth);
