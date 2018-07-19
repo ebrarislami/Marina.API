@@ -7,6 +7,19 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 var redis = require('../../redis');
 
+exports.getPedestal = async(req, res, next) => {
+    const { Pedestal, Berth } = models;
+    const { pedestalId } = req.params;
+    try {
+        const pedestals = await Pedestal.findOne({where: {id: pedestalId}, include: [{model: Berth, order: [['id', 'DESC']]}]   
+            ,order: [['createdAt', 'DESC']]});
+        res.status(200).json(pedestals);
+    }
+    catch(err) {
+        return error(res, err.message);
+    }
+};
+
 exports.createMarinaPedestal = async(req, res, next) => {
     const { marinaId } = req.params;
     const { Pedestal, Berth } = models;

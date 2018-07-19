@@ -11,6 +11,7 @@ router.get('/:marinaId', MarinaController.getMarina);
 router.get('/:marinaId/pedestals', isAuth, PedestalController.getAllMarinaPedestals);
 router.post('/:marinaId/pedestals', isAuth, PedestalController.createMarinaPedestal);
 router.get('/:marinaId/utilities', PedestalController.getAllMarinaPedestals);
+router.get('/:marinaId/pedestals/:pedestalId', PedestalController.getPedestal);
 router.get('/:marinaId/pedestals/:pedestalId/berths', BerthController.getPedestalBerths);
 router.get('/:marinaId/pedestals/:pedestalId/berths/:berthId', isAuth, BerthController.getBerth);
 router.get('/:marinaId/pedestals/:pedestalId/berths/:berthId/toggleElectricity', isAuth, BerthController.toggleBerthElectricity);

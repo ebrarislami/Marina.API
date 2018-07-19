@@ -13,13 +13,13 @@ client.on('message', function (topic, message) {
         const waterConsumption = jsonMessage.water;
         const electricityConsumption = jsonMessage.electricity;
         const pedestal_id = jsonMessage.pedestal_id;
-        // models.Berth.find({where: {id: pedestal_id}}).then(result => {
+        models.Berth.findOne({where: {id: pedestal_id}}).then(result => {
+            const water = result.water + waterConsumption;
+            const electricity = result.electricity + electricityConsumption;
+            models.Berth.update({water: water, electricity: electricity}, { where: {id: pedestal_id}}).then(result => {
             
-        // });
-        models.Berth.update({water: 1, electricity: 1}, { where: {id: pedestal_id}}).then(result => {
-            
-        }).catch(err => {
-            // return error(res, err.message);
+            }).catch(err => {
+            });
         });
     }
 });
