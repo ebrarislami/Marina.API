@@ -25,7 +25,7 @@ exports.getBerth = async(req, res, next) => {
     const { berthId } = req.params;
     const { Berth } = models;
     try {
-        const berth = await Berth.find({where: {id: berthId}});
+        const berth = await Berth.findOne({where: {id: berthId}});
         res.status(200).json(berth);
     }
     catch(err) {
@@ -42,8 +42,7 @@ exports.toggleBerthElectricity = async(req, res, next) => {
             
         } else {
             const isElectricityEnabled = !berth.isElectricityEnabled;
-            berth.isElectricityEnabled = isElectricityEnabled;
-            Berth.update({isElectricityEnabled: isElectricityEnabled}, { where: {id: berthId}}).then(result => {
+            berth.update({isElectricityEnabled: isElectricityEnabled}, { where: {id: berthId}}).then(result => {
                 const obj = {
                     electricity: isElectricityEnabled ? 'On' : 'Off',
                 };
@@ -69,8 +68,7 @@ exports.toggleBerthWater = async(req, res, next) => {
             res.status(404).json();
         } else {
             const isWaterEnabled = !berth.isWaterEnabled;
-            berth.isWaterEnabled = isWaterEnabled;
-            Berth.update({isWaterEnabled: isWaterEnabled}, { where: {id: berthId}}).then(result => {  
+            berth.update({isWaterEnabled: isWaterEnabled}, { where: {id: berthId}}).then(result => {  
                 const obj = {
                     water: isWaterEnabled ? 'On' : 'Off',
                 };
