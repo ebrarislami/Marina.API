@@ -23,7 +23,6 @@ client.on('message', async(topic, message) => {
             const berth = await models.Berth.findOne({where: {id: pedestal_id}});
             const elec = berth.electricity + electricityConsumption;
             berth.electricity = elec;
-            berth.name = 'Berth';
             berth.save().then(() => {
             }).catch(err => console.log(err));
         }
