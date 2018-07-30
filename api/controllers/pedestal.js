@@ -7,23 +7,17 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 var redis = require('../../redis');
 
-//Delete Pedestal
-exports.deleteMarinaPedestals = async (req, res, next) => {
-    const { Pedestal } = models
-    const { marinaId } = models;
-    const { userData } = req;
-    const { id } = req.params;
-
-    Pedestal.destroy({
-        
-        where: {id: id}
-
-    }).then(deletePedestal => {
-
-        res.status(200).json(deletePedestal);
-    }).catch(err => {
+exports.getPedestal = async(req, res, next) => {
+    const { Pedestal, Berth } = models;
+    const { pedestalId } = req.params;
+    try {
+        const pedestals = await Pedestal.findOne({where: {id: pedestalId}, include: [{model: Berth, order: [['id', 'DESC']]}]   
+            ,order: [['createdAt', 'DESC']]});
+        res.status(200).json(pedestals);
+    }
+    catch(err) {
         return error(res, err.message);
-});
+    }
 };
 
 exports.createMarinaPedestal = async(req, res, next) => {
@@ -69,7 +63,8 @@ exports.getAllMarinaPedestals = async(req, res, next) => {
     const { marinaId } = req.params;
     const { Pedestal, Berth } = models;
     try {
-        const pedestals = await Pedestal.findAll({where: {marinaId: marinaId}, include: [Berth]});
+        const pedestals = await Pedestal.findAll({where: {marinaId: marinaId}, include: [{model: Berth, order: [['id', 'DESC']]}]   
+            ,order: [['createdAt', 'DESC']]});
         res.status(200).json(pedestals);
     }
     catch(err) {

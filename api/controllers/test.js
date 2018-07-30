@@ -5,13 +5,34 @@ const error = require('../helpers/error-handler');
 const mailSender = require('../helpers/email-sender');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-var redis = require('../../redis');
+const redis = require('../../redis');
 
+exports.waterOn = async(req, res, next) => {
+    io.sockets.emit('water',{state: 'wOn'});
+    // io.sockets.emit('join', {pedestal_id: 'dsadsadsadsa'});
+    res.status(200).json();
+};
+ 
+exports.waterOff = async(req, res, next) => {
+    io.sockets.emit('water', {state: 'wOff'});
+    res.status(200).json();
+};
 
-exports.getTest = async(req, res, next) => {
-    const { Test } = models;
-    const tests = await Test.findAll({});
-    res.status(200).json(tests);
+exports.electricityOn = async(req, res, next) => {
+    let socketsObject = io.sockets.sockets;
+    let sockets = [];
+    for (const property in socketsObject) {
+        const socket = socketsObject[property];
+        sockets.push(socket.id);
+    }
+    // io.sockets.to(sockets[0]).emit('electricity',{state: 'eOn'});
+    io.sockets.emit('electricity',{state: 'eOn'});
+    res.status(200).json();
+};
+
+exports.electricityOff = async(req, res, next) => {
+    io.sockets.emit('electricity', {state: 'eOff'});
+    res.status(200).json();
 };
 
 

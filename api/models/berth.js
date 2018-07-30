@@ -19,6 +19,12 @@ const berth = (sequelize, DataTypes) => {
         isWaterEnabled: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        water: {
+            type: DataTypes.FLOAT,
+        },
+        electricity: {
+            type: DataTypes.FLOAT,
         }
     });
   

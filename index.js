@@ -1,15 +1,16 @@
 const express = require('express');
+const http = require('http')
+const app = express();
+const server = http.createServer(app)
+// const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const Sequelize = require('sequelize');
-const AuthRoutes = require('./api/routes/auth');
-const UserRoutes = require('./api/routes/user');
-const MarinaRoutes = require('./api/routes/marina');
-const TestRoutes = require('./api/routes/test');
 const sequelize = require('./db');
+const mongo = require('./mongodb');
 const models = require('./api/models');
 require('dotenv').config()
-const app = express();
+// app.set('socketio', io);
 
 const path = require('path')
 const PORT = process.env.PORT || 3000
@@ -33,10 +34,15 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/auth', AuthRoutes);
-app.use('/api/user', UserRoutes);
-app.use('/api/test', TestRoutes);
-app.use('/api/marina', MarinaRoutes);
+const client = require('./mqtt');
+const io = require('./socket').listen(server);
+
+const AuthRoutes = require('./api/routes/auth');
+const UserRoutes = require('./api/routes/user');
+const MarinaRoutes = require('./api/routes/marina');
+const TestRoutes = require('./api/routes/test');
+
+require('./api/routes/index')(app, io);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -55,12 +61,16 @@ app.use((error, req, res, next) => {
     });
 });
 
-// app.listen(PORT, () => console.log('Server is running'))
+server.listen(PORT, () => console.log('Server is running'));
 
-models.sequelize.sync().then(() => {
-    app.listen(PORT, () => {
-      console.log('Server is up and running');
-    });
-});
+// io.on('connection', (socket) => {
+//     console.log('New User connected')
+// });
+
+// models.sequelize.sync().then(() => {
+//     server.listen(PORT, () => {
+//       console.log('Server is up and running');
+//     });
+// });
 
 module.exports = app;

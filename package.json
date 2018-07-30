@@ -15,13 +15,16 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.2.2",
     "morgan": "^1.9.0",
+    "mqtt": "^2.18.2",
     "nodemailer": "^4.6.7",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "redis": "^2.8.0",
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.0.0",
+    "socket.io": "^2.1.1",
     "swagger-ui-express": "^3.0.10"
   }
 }

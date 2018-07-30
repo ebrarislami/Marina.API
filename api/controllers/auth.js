@@ -39,7 +39,7 @@ exports.signup = async(req, res, next) => {
                             role: "User",
                         }, 'secret',
                         {
-                            expiresIn: "24h"
+                            expiresIn: "30d"
                         });
                         let user = {
                             token: token,
