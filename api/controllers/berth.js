@@ -7,7 +7,25 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 var redis = require('../../redis');
 
+//Delete Berths
+exports.deleteMarinaBerths = async (req, res, next) => {
+    const { Berth } = models;
+    const { marinaId } = models;
+    const { pedestalId } = models;
+    const { userData } = req;
+    const { id } = req.params;
 
+    Berth.destroy({
+        
+        where: {id: id}
+
+    }).then(deleteBerths => {
+
+        res.status(200).json(deleteBerths);
+    }).catch(err => {
+        return error(res, err.message);
+});
+};
 
 exports.getPedestalBerths = async(req, res, next) => {
     const { pedestalId } = req.params;
