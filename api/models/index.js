@@ -11,6 +11,7 @@ const models = {
     Berth: sequelize.import('./berth'),
     Reservation: sequelize.import('./reservation'),
     Docking: sequelize.import('./docking'),
+    BerthConsumption: sequelize.import('./berth_consumption'),
     Test: sequelize.import('./test')
 }
 

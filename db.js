@@ -10,7 +10,7 @@ sequelize = new Sequelize('cmiatonx', 'cmiatonx', 'pqPX9v4FEysA5T-PwJjJGi3Bdc2ox
           acquire: 30000,
           idle: 10000
         },
-        // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
+
         operatorsAliases: false
     })
 
