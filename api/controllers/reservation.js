@@ -4,11 +4,20 @@ const models = require('../models');
 const error = require('../helpers/error-handler');
 
 exports.createReservation = async(req, res, next) => {
-    const { berthId } = req.body;
+    const { berthId, fromDate, toDate } = req.body;
     const { userId } = req.userData;
     const { marinaId } = req.params;
     const { Reservation } = models;
     const isConfirmed = false;
+
+    if (fromDate > toDate) {
+        return error(res, 'Invalid Date'); 
+    }
+
+    if (!marinaId || !berthId) {
+        return error(res, 'Invalid Request'); 
+    }
+
 
     sequelize.query(`
         select b.*
@@ -27,7 +36,9 @@ exports.createReservation = async(req, res, next) => {
             Reservation.create({
                 berthId: berth.id,
                 userId,
-                isConfirmed
+                isConfirmed,
+                fromDate,
+                toDate
             }).then(reservation => {
                 res.status(200).json(reservation);
             }).catch(err => {
@@ -42,14 +53,32 @@ exports.createReservation = async(req, res, next) => {
 };
  
 exports.getReservation = async(req, res, next) => {
-    const { Reservation } = models;
+    const { Reservation, BerthConsumption, Berth } = models;
     const { reservationId } = req.params;
-    try {
-        const reservation = await Reservation.findOne({where: {id: reservationId}});
-        res.status(200).json(reservation);
-    } catch(err) {
-        return error(res, err.message);
-    }
+
+    sequelize.query(`
+    select r.*, p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.name as berthName
+    from 
+    reservations r,
+    berths b,
+    pedestals p,
+    marinas m
+    where
+        r."berthId" = b.id and
+        b."pedestalId" = p.id and
+        p."marinaId" = m.id and
+        r.id = ?
+    limit 1;
+    `, { replacements: [reservationId], type: sequelize.QueryTypes.SELECT })
+        .then(result => {
+            if (result.length) {
+                res.status(200).json(result[0]);
+            } else {
+                res.status(404).json();
+            }
+        }).catch(err => {
+            return error(res, err.message);
+        });
 };
 
 exports.getMarinaReservations = async(req, res, next) => {

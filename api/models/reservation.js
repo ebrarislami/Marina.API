@@ -11,6 +11,12 @@ const reservation = (sequelize, DataTypes) => {
         isConfirmed: {
             type: DataTypes.BOOLEAN,
         },
+        fromDate: {
+            type: DataTypes.DATE
+        },
+        toDate: {
+            type: DataTypes.DATE
+        }
     });
   
     
