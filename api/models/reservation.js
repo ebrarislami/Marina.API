@@ -16,7 +16,10 @@ const reservation = (sequelize, DataTypes) => {
         },
         toDate: {
             type: DataTypes.DATE
-        }
+        },
+        isStarted: {
+            type: DataTypes.BOOLEAN,
+        },
     });
   
     
@@ -30,7 +33,11 @@ const reservation = (sequelize, DataTypes) => {
         Reservation.belongsTo(models.Yacht, {
             foreignKey: 'yachtId'
         });
+        Reservation.belongsTo(models.Marina, {
+            foreignKey: 'marinaId'
+        });
         Reservation.hasOne(models.Docking);
+        Reservation.hasMany(models.Transaction);
     };
   
     return Reservation;

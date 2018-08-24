@@ -30,6 +30,7 @@ const user = (sequelize, DataTypes) => {
 
     User.associate = models => {
         User.hasMany(models.Reservation);
+        User.hasMany(models.Transaction);
         User.belongsToMany(models.Yacht, {
             through: models.YachtOwners
         });

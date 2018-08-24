@@ -73,4 +73,7 @@ server.listen(PORT, () => console.log('Server is running'));
 //     });
 // });
 
+// models.Reservation.sync({alter: true});
+// models.Transaction.sync({alter: true});
+
 module.exports = app;

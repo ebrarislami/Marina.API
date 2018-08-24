@@ -8,7 +8,8 @@ exports.createReservation = async(req, res, next) => {
     const { userId } = req.userData;
     const { marinaId } = req.params;
     const { Reservation } = models;
-    const isConfirmed = false;
+    const isConfirmed = null;
+    const isStarted = false;
 
     if (fromDate > toDate) {
         return error(res, 'Invalid Date'); 
@@ -35,10 +36,12 @@ exports.createReservation = async(req, res, next) => {
             const berth = result[0];
             Reservation.create({
                 berthId: berth.id,
+                marinaId,
                 userId,
                 isConfirmed,
                 fromDate,
-                toDate
+                toDate,
+                isStarted
             }).then(reservation => {
                 res.status(200).json(reservation);
             }).catch(err => {
@@ -57,28 +60,28 @@ exports.getReservation = async(req, res, next) => {
     const { reservationId } = req.params;
 
     sequelize.query(`
-    select r.*, p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.name as berthName
-    from 
-    reservations r,
-    berths b,
-    pedestals p,
-    marinas m
-    where
-        r."berthId" = b.id and
-        b."pedestalId" = p.id and
-        p."marinaId" = m.id and
-        r.id = ?
-    limit 1;
-    `, { replacements: [reservationId], type: sequelize.QueryTypes.SELECT })
-        .then(result => {
-            if (result.length) {
-                res.status(200).json(result[0]);
-            } else {
-                res.status(404).json();
-            }
-        }).catch(err => {
-            return error(res, err.message);
-        });
+        select r.*, p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.name as berthName
+        from 
+        reservations r,
+        berths b,
+        pedestals p,
+        marinas m
+        where
+            r."berthId" = b.id and
+            b."pedestalId" = p.id and
+            p."marinaId" = m.id and
+            r.id = ?
+        limit 1;
+        `, { replacements: [reservationId], type: sequelize.QueryTypes.SELECT })
+            .then(result => {
+                if (result.length) {
+                    res.status(200).json(result[0]);
+                } else {
+                    res.status(404).json();
+                }
+            }).catch(err => {
+                return error(res, err.message);
+            });
 };
 
 exports.getMarinaReservations = async(req, res, next) => {
@@ -149,6 +152,75 @@ exports.declineReservation = async(req, res, next) => {
         reservation.save().then(() => {
             res.status(200).json(reservation);
         }).catch(err => error(res, err.message));
+    } catch(err) {
+        return error(res, err.message);
+    }
+};
+
+exports.startReservation = async(req, res, next) => {
+    const {Marina, Pedestal, Berth, Reservation, Docking, Transaction} = models;
+    const { reservationId } = req.params;
+    const { amount } = req.body;
+    const { userId } = req.userData;
+
+    if (!amount) {
+        return error(res, "Amount should be greater than 0");
+    }
+
+    try {
+        const reservation = await Reservation.findOne({where: {id: reservationId}});
+        reservation.isStarted = true;
+        reservation.save().then(() => {
+
+            Docking.create({
+                reservationId: reservationId
+            }).then(docking => {
+                Transaction.create({
+                    dockingId: docking.id,
+                    reservationId: reservationId,
+                    amount: amount,
+                    userId: userId
+                }).then(transaction => {
+                    res.status(200).json(docking);
+                }).catch(err => {
+                    return error(res, err.message);
+                });
+            }).catch(err => {
+                return error(res, err.message);
+            });
+        }).catch(err => error(res, err.message));
+    } catch(err) {
+        return error(res, err.message);
+    }
+};
+
+exports.addAmountReservation = async(req, res, next) => {
+    const {Marina, Pedestal, Berth, Reservation, Docking, Transaction} = models;
+    const { reservationId } = req.params;
+    const { amount } = req.body;
+    const { userId } = req.userData;
+
+    if (!amount) {
+        return error(res, "Amount should be greater than 0");
+    }
+
+    try {
+        const docking = await Docking.findOne({where: {reservationId: reservationId}});
+
+        if (docking) {
+            Transaction.create({
+                dockingId: docking.id,
+                reservationId: reservationId,
+                amount: amount,
+                userId: userId
+            }).then(transaction => {
+                res.status(200).json(transaction);
+            }).catch(err => {
+                return error(res, err.message);
+            });
+        } else {
+            return error(res, "Docking not found!");
+        }
     } catch(err) {
         return error(res, err.message);
     }

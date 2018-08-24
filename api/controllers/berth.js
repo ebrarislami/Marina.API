@@ -21,6 +21,28 @@ exports.getPedestalBerths = async(req, res, next) => {
     }
 };
 
+exports.getMarinaBerths = async(req, res, next) => {
+    const { marinaId } = req.params;
+    const { Pedestal, Berth, Marina } = models;
+
+    sequelize.query(`
+    select b.*, m.id as marinaId
+    from 
+    berths b,
+    pedestals p,
+    marinas m
+    where
+        b."pedestalId" = p.id and
+        p."marinaId" = m.id and
+        m.id = ?;
+    `, { replacements: [marinaId], type: sequelize.QueryTypes.SELECT })
+    .then(result => {
+        res.status(200).json(result);
+    }).catch(err => {
+        return error(res, err.message);
+    });
+};
+
 exports.getBerth = async(req, res, next) => {
     const { berthId } = req.params;
     const { Berth } = models;

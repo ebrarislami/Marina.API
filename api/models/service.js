@@ -1,5 +1,5 @@
-const marina = (sequelize, DataTypes) => {
-    const Marina = sequelize.define('marina', {
+const service = (sequelize, DataTypes) => {
+    const Service = sequelize.define('service', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV1,
@@ -11,13 +11,12 @@ const marina = (sequelize, DataTypes) => {
     });
   
     
-    Marina.associate = models => {
+    Service.associate = models => {
         Marina.hasMany(models.Pedestal);
-        Marina.hasMany(models.Reservation);
         Marina.belongsToMany(models.User, { through: models.MarinaRoles });
     };
   
-    return Marina;
+    return Service;
   };
   
-  module.exports = marina;
+  module.exports = service;
