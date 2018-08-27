@@ -6,7 +6,7 @@ const isAdmin = require('../middleware/check-admin');
 const isAuth = require('../middleware/check-auth');
 
 router.get('/', UserController.getUsers);
-router.get('/:userId/reservations', ReservationController.getUserReservations);
+router.get('/:userId/reservations', isAuth, ReservationController.getUserReservations);
 router.get('/:userId/transactions', isAuth, UserController.getUserTransactions);
 router.post('/:userId/yacht', UserController.createUserYacht);
 
