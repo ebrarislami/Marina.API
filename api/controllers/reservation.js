@@ -88,12 +88,15 @@ exports.getMarinaReservations = async(req, res, next) => {
     const {Marina, Pedestal, Berth, Reservation} = models;
     const { marinaId } = req.params;
     sequelize.query(`
-        select r.*, p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.name as berthName
-        from reservations r,
-        berths b,
-        pedestals p,
-        marinas m
+        select r.*, p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.name as berthName, u.*
+        from 
+            reservations r,
+            berths b,
+            pedestals p,
+            marinas m,
+            users u
         where
+            r."userId" = u.id and
             r."berthId" = b.id and
             b."pedestalId" = p.id and
             p."marinaId" = m.id and
