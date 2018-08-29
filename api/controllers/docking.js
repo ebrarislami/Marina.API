@@ -32,7 +32,7 @@ exports.getMarinaDockings = async(req, res, next) => {
         p."marinaId" = m.id and
         t."dockingId" = d.id and
         m.id = ?
-    GROUP BY d.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b."isWaterEnabled", b."isElectricityEnabled";
+    GROUP BY d.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b.id, b."isWaterEnabled", b."isElectricityEnabled";
     `
 
     sequelize.query(query, options)
