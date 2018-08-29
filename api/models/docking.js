@@ -9,6 +9,10 @@ const docking = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
+        balance: {
+            type: DataTypes.FLOAT,
+            defaultValue: 0
+        }
     });
   
     
