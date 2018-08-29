@@ -11,11 +11,20 @@ const sequelize = require('./db');
 var client  = mqtt.connect('mqtt://m20.cloudmqtt.com', {username: 'xvwpkpzb', password: 'NXGd_6_hESIy', port: 15833});
 client.on('connect', function () {
     client.subscribe('consumption');
+    client.subscribe('getInfos');
+
+
+    // const obj = {
+    //     electricity: isElectricityEnabled ? 'On' : 'Off',
+    // };
+    // const buf = Buffer.from(JSON.stringify(obj));
+    client.publish('getInfos', 'info')
+
 });
   
 client.on('message', async(topic, message) => {
-    const jsonMessage = JSON.parse(message.toString('utf8'));
     if (topic === 'consumption') {
+        const jsonMessage = JSON.parse(message.toString('utf8'));
         const waterConsumption = jsonMessage.water;
         const electricityConsumption = jsonMessage.electricity;
         const berthId = jsonMessage.pedestal_id;
@@ -36,6 +45,11 @@ client.on('message', async(topic, message) => {
             // }).catch(err => console.log(err));
         }
     }
+
+    if (topic === 'getInfos') {
+        
+    }
+
 });
 
 
