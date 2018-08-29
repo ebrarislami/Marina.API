@@ -39,7 +39,7 @@ exports.signup = async(req, res, next) => {
                             role: "User",
                         }, 'secret',
                         {
-                            expiresIn: "30 days"
+                            expiresIn: 86400 * 30
                         });
                         let user = {
                             token: token,
@@ -87,7 +87,7 @@ exports.login = async(req, res, next) => {
                         role: marinaUser ? marinaUser.role : "User",
                     }, 'secret',
                     {
-                        expiresIn: "24h"
+                        expiresIn: 86400 * 30
                     });
     
                     const decodedToken = jwt.decode(token);
