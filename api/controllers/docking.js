@@ -11,7 +11,7 @@ exports.getMarinaDockings = async(req, res, next) => {
     // options = sequelize.models.Docking.validateIncludeOptions(options, {InstantiatedAttribute: true});
 
     sequelize.query(`
-        select d.*, u."fullName", r."fromDate", r."toDate", p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.name as berthName
+        select d.*, u."fullName", r."fromDate", r."toDate", p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.name as berthName, b."isWaterEnabled" as water, b."isElectricityEnabled" as electricity
         from 
         dockings d,
         users u,

@@ -96,7 +96,7 @@ exports.getMarinaReservations = async(req, res, next) => {
             marinas m,
             users u
         where
-            r."userId" = u.id and
+            r."userId" = u.id and 
             r."berthId" = b.id and
             b."pedestalId" = p.id and
             p."marinaId" = m.id and
@@ -166,9 +166,9 @@ exports.startReservation = async(req, res, next) => {
     const { amount } = req.body;
     const { userId } = req.userData;
 
-    if (!amount) {
-        return error(res, "Amount should be greater than 0");
-    }
+    // if (!amount) {
+    //     return error(res, "Amount should be greater than 0");
+    // }
 
     try {
         const reservation = await Reservation.findOne({where: {id: reservationId}});
