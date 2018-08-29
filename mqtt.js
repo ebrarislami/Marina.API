@@ -17,7 +17,7 @@ client.on('connect', function () {
     //     electricity: isElectricityEnabled ? 'On' : 'Off',
     // };
     // const buf = Buffer.from(JSON.stringify(obj));
-    client.publish('getInfos', 'info')
+    // client.publish('getInfos', 'info')
 });
   
 client.on('message', async(topic, message) => {
@@ -52,7 +52,8 @@ client.on('message', async(topic, message) => {
     }
 
     if (topic === 'getInfos') {
-        
+        const msg = (message.toString('utf8'));
+        console.log(msg)
     }
 
 });

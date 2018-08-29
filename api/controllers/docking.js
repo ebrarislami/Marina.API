@@ -6,7 +6,8 @@ const client = require('../../mqtt');
 exports.getMarinaDockings = async(req, res, next) => {
     const {Marina, Pedestal, Berth, Reservation, Docking, Transaction} = models;
     const { marinaId } = req.params;
-
+    const buf = Buffer.from('info');
+    client.publish('getInfos', buf);
     var options = { replacements: [marinaId], type: sequelize.QueryTypes.SELECT, model: Docking,
         hasJoin: true,
         include: [{
