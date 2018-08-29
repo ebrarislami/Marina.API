@@ -10,6 +10,7 @@ const docking = (sequelize, DataTypes) => {
     
     Docking.associate = models => {
         Docking.belongsTo(models.Reservation);
+        Docking.hasMany(models.Transaction);
     };
   
     return Docking;

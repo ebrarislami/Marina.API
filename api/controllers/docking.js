@@ -6,27 +6,36 @@ exports.getMarinaDockings = async(req, res, next) => {
     const {Marina, Pedestal, Berth, Reservation, Docking, Transaction} = models;
     const { marinaId } = req.params;
 
-    var options = { replacements: [marinaId], type: sequelize.QueryTypes.SELECT };
-    // console.log(Docking.validate);
-    // options = sequelize.models.Docking.validateIncludeOptions(options, {InstantiatedAttribute: true});
+    var options = { replacements: [marinaId], type: sequelize.QueryTypes.SELECT, model: Docking,
+        hasJoin: true,
+        include: [{
+            model: Transaction
+        }] 
+    };
+    Docking._validateIncludedElements(options);
 
-    sequelize.query(`
-        select d.*, u."fullName", r."fromDate", r."toDate", p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.name as berthName, b."isWaterEnabled" as water, b."isElectricityEnabled" as electricity
-        from 
+    const query = `
+    select d.*, SUM(t.amount) as amount, u."fullName", r."fromDate", r."toDate", p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.id as berthid, b.name as berthName, b."isWaterEnabled" as water, b."isElectricityEnabled" as electricity
+    from 
         dockings d,
         users u,
         reservations r,
         pedestals p,
         berths b,
-        marinas m
-        where
-            r."userId" = u.id and
-            d."reservationId" = r.id and
-            r."berthId" = b.id and
-            b."pedestalId" = p.id and
-            p."marinaId" = m.id and
-            m.id = ?;
-    `, options)
+        marinas m,
+        transactions t
+    where
+        r."userId" = u.id and
+        d."reservationId" = r.id and
+        r."berthId" = b.id and
+        b."pedestalId" = p.id and
+        p."marinaId" = m.id and
+        t."dockingId" = d.id and
+        m.id = ?
+    GROUP BY d.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b."isWaterEnabled", b."isElectricityEnabled";
+    `
+
+    sequelize.query(query, options)
     .then(result => {
         res.status(200).json(result);
     }).catch(err => {
