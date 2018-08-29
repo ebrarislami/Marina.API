@@ -27,7 +27,7 @@ exports.getMarinaDockings = async(req, res, next) => {
         where
             r."userId" = u.id and
             d."reservationId" = r.id and
-            r."berthId" = b.id and2
+            r."berthId" = b.id and
             b."pedestalId" = p.id and
             p."marinaId" = m.id and
             t."dockingId" = d.id and
