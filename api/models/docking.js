@@ -5,6 +5,10 @@ const docking = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV1,
             primaryKey: true
         },
+        isClosed: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
     });
   
     

@@ -74,5 +74,6 @@ server.listen(PORT, () => console.log('Server is running'));
 // });
 
 //  
+// models.Docking.sync({alter: true});
 
 module.exports = app;
