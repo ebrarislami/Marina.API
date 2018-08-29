@@ -42,3 +42,17 @@ exports.getMarinaDockings = async(req, res, next) => {
         return error(res, err.message);
     });
 };
+
+exports.closeDocking = async(req, res, next) => {
+    const {Docking} = models;
+    const { marinaId, dockingId } = req.params;
+    try {
+        const docking = await Docking.findOne({where: {id: dockingId}});
+        docking.isClosed = true;
+        docking.save().then(() => {
+            res.status(200).json(docking);
+        }).catch(err => error(res, err.message));
+    } catch(err) {
+        return error(res, err.message);
+    }
+}
