@@ -1,6 +1,7 @@
 const models = require('../models');
 const error = require('../helpers/error-handler');
 const Sequelize = require('sequelize');
+const client = require('../../mqtt');
 
 exports.getMarinaDockings = async(req, res, next) => {
     const {Marina, Pedestal, Berth, Reservation, Docking, Transaction} = models;

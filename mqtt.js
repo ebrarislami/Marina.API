@@ -13,13 +13,11 @@ client.on('connect', function () {
     client.subscribe('consumption');
     client.subscribe('getInfos');
 
-
     // const obj = {
     //     electricity: isElectricityEnabled ? 'On' : 'Off',
     // };
     // const buf = Buffer.from(JSON.stringify(obj));
     client.publish('getInfos', 'info')
-
 });
   
 client.on('message', async(topic, message) => {
@@ -29,15 +27,22 @@ client.on('message', async(topic, message) => {
         const electricityConsumption = jsonMessage.electricity;
         const berthId = jsonMessage.pedestal_id;
         if (waterConsumption !== 0 || electricityConsumption !== 0) {
-            models.BerthConsumption.create({
-                berthId: pedestal_id,
-                water: waterConsumption,
-                electricity: electricityConsumption
-            }).then(result => {
 
-            }).catch(err => {
+            const docking = await models.Docking.findOne({where: {berthId: berthId, isClosed: false}});
+            if (docking) {
+                docking.amount = (waterConsumption * 1) + (electricityConsumption * 1);
+                docking.save().then(() => {}).catch(err => console.log(err));
+            }
 
-            });
+            // models.BerthConsumption.create({
+            //     berthId: berthId,
+            //     water: waterConsumption,
+            //     electricity: electricityConsumption
+            // }).then(result => {
+
+            // }).catch(err => {
+                
+            // });
 
             // const berth = await models.Berth.findOne({where: {id: berthId}});
             // berth.electricity = elec;

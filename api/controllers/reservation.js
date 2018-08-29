@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const models = require('../models');
 const error = require('../helpers/error-handler');
+const client = require('../../mqtt');
 
 exports.createReservation = async(req, res, next) => {
     const { berthId, fromDate, toDate } = req.body;
@@ -184,6 +185,8 @@ exports.startReservation = async(req, res, next) => {
                     amount: amount,
                     userId: userId
                 }).then(transaction => {
+                    const buf = Buffer.from('reset');
+                    client.publish(reservation.berthId, buf);
                     res.status(200).json(docking);
                 }).catch(err => {
                     return error(res, err.message);
