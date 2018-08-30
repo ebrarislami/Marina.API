@@ -134,7 +134,7 @@ exports.getBerthReservations = async(req, res, next) => {
 };
 
 exports.acceptReservation = async(req, res, next) => {
-    const {Marina, Pedestal, Berth, Reservation} = models;
+    const { Reservation } = models;
     const { reservationId } = req.params;
     try {
         const reservation = await Reservation.findOne({where: {id: reservationId}});
@@ -148,7 +148,7 @@ exports.acceptReservation = async(req, res, next) => {
 };
 
 exports.declineReservation = async(req, res, next) => {
-    const {Marina, Pedestal, Berth, Reservation} = models;
+    const { Reservation } = models;
     const { reservationId } = req.params;
     try {
         const reservation = await Reservation.findOne({where: {id: reservationId}});

@@ -12,7 +12,7 @@ var client  = mqtt.connect('mqtt://m20.cloudmqtt.com', {username: 'xvwpkpzb', pa
 client.on('connect', function () {
     client.subscribe('consumption');
     client.subscribe('getInfos');
-    // client.publish('getInfos', 'reset');
+    // client.publish('6088f220-7f7c-11e8-bf94-39e4e1b78ae0', 'reset');
     client.publish('getInfos', 'info');
 });
   
