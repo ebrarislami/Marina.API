@@ -58,7 +58,17 @@ exports.closeDocking = async(req, res, next) => {
                 berth.isWaterEnabled = false;
                 berth.save().then(() => {
                     const buf = Buffer.from('reset');
-                    client.publish(berth.id, buf);
+                    client.publish('getInfos', buf);
+                    const objE = {
+                        electricity: 'Off',
+                    };
+                    const bufE = Buffer.from(JSON.stringify(objE));
+                    client.publish(berth.id, bufE);
+                    const objW = {
+                        Water: 'Off',
+                    };
+                    const bufW = Buffer.from(JSON.stringify(objW));
+                    client.publish(berth.id, bufW);
                     res.status(200).json(docking);
                 }).catch(err => error(res, err.message));
             }).catch(err => error(res, err.message));
