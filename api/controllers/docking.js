@@ -46,7 +46,7 @@ exports.getMarinaDockings = async(req, res, next) => {
 };
 
 exports.closeDocking = async(req, res, next) => {
-    const {Docking, Reservation} = models;
+    const {Docking, Reservation, Berth} = models;
     const { marinaId, dockingId } = req.params;
     try {
         const docking = await Docking.findOne({include: [ Reservation ]}, {where: {id: dockingId}});
