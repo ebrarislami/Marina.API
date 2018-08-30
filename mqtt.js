@@ -13,7 +13,7 @@ client.on('connect', function () {
     client.subscribe('consumption');
     client.subscribe('getInfos');
     // client.publish('getInfos', 'reset');
-    // client.publish('getInfos', 'info');
+    client.publish('getInfos', 'info');
 });
   
 client.on('message', async(topic, message) => {
@@ -22,11 +22,12 @@ client.on('message', async(topic, message) => {
         const waterConsumption = jsonMessage.water;
         const electricityConsumption = jsonMessage.electricity;
         const berthId = jsonMessage.pedestal_id;
-
+        const isWaterEnabled = jsonMessage.waterStatus;
+        const isElectricityEnabled = jsonMessage.electricityStatus;
 
         const query = `
-        select d.*
-        from 
+        select d.*, b.id as "berthId"
+        from
             dockings d,
             reservations r,
             berths b
@@ -40,10 +41,18 @@ client.on('message', async(topic, message) => {
         .then(result => {
             if (result.length > 0) {
                 const docking = result[0];
-                if (docking && (docking.waterConsumption !== waterConsumption || docking.electricityConsumption !== electricityConsumption)) {
+                if (docking) {
                     docking.waterConsumption = waterConsumption;
                     docking.electricityConsumption = electricityConsumption;
-                    docking.save().then(() => {}).catch(err => console.log(err));
+                    docking.save().then(() => {
+                        const berthId = docking.berthId;
+                        console.log(berthId)
+                        models.Berth.findOne({where: {id: berthId}}).then(berth => {
+                            berth.isWaterEnabled = isWaterEnabled;
+                            berth.isElectricityEnabled = isElectricityEnabled;
+                            berth.save().then(() => {}).catch(err => console.log(err));
+                        }).catch(err => console.log(err));
+                    }).catch(err => console.log(err));
                 }
             }
         }).catch(err => console.log(err));

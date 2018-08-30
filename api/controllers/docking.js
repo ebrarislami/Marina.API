@@ -37,12 +37,14 @@ exports.getMarinaDockings = async(req, res, next) => {
         GROUP BY d.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b.id, b."isWaterEnabled", b."isElectricityEnabled";
     `
 
-    sequelize.query(query, options)
-    .then(result => {
-        res.status(200).json(result);
-    }).catch(err => {
-        return error(res, err.message);
-    });
+    setTimeout(() => {
+        sequelize.query(query, options)
+        .then(result => {
+            res.status(200).json(result);
+        }).catch(err => {
+            return error(res, err.message);
+        });
+    }, 100);
 };
 
 exports.closeDocking = async(req, res, next) => {
@@ -58,7 +60,7 @@ exports.closeDocking = async(req, res, next) => {
                 berth.isWaterEnabled = false;
                 berth.save().then(() => {
                     const buf = Buffer.from('reset');
-                    client.publish('getInfos', buf);
+                    client.publish(berth.id, buf);
                     const objE = {
                         electricity: 'Off',
                     };
