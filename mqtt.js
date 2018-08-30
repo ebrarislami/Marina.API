@@ -12,12 +12,6 @@ var client  = mqtt.connect('mqtt://m20.cloudmqtt.com', {username: 'xvwpkpzb', pa
 client.on('connect', function () {
     client.subscribe('consumption');
     client.subscribe('getInfos');
-
-    // const obj = {
-    //     electricity: isElectricityEnabled ? 'On' : 'Off',
-    // };
-    // const buf = Buffer.from(JSON.stringify(obj));
-    // client.publish('getInfos', 'info')
 });
   
 client.on('message', async(topic, message) => {
@@ -29,7 +23,7 @@ client.on('message', async(topic, message) => {
         if (waterConsumption !== 0 || electricityConsumption !== 0) {
 
             const docking = await models.Docking.findOne({where: {berthId: berthId, isClosed: false}});
-            if (docking) {
+            if (docking && (docking.waterConsumption !== waterConsumption || docking.electricityConsumption !== electricityConsumption)) {
                 docking.waterConsumption = waterConsumption;
                 docking.electricityConsumption = electricityConsumption;
                 docking.save().then(() => {}).catch(err => console.log(err));
