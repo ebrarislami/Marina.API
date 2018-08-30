@@ -12,6 +12,14 @@ const docking = (sequelize, DataTypes) => {
         balance: {
             type: DataTypes.FLOAT,
             defaultValue: 0
+        },
+        waterConsumption: {
+            type: DataTypes.FLOAT,
+            defaultValue: 0
+        },
+        electricityConsumption: {
+            type: DataTypes.FLOAT,
+            defaultValue: 0
         }
     });
   

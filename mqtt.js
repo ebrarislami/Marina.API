@@ -30,7 +30,8 @@ client.on('message', async(topic, message) => {
 
             const docking = await models.Docking.findOne({where: {berthId: berthId, isClosed: false}});
             if (docking) {
-                docking.amount = (waterConsumption * 1) + (electricityConsumption * 1);
+                docking.waterConsumption = waterConsumption;
+                docking.electricityConsumption = electricityConsumption;
                 docking.save().then(() => {}).catch(err => console.log(err));
             }
 
