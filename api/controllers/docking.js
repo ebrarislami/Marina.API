@@ -68,8 +68,8 @@ exports.closeDocking = async(req, res, next) => {
     }
 }
 
-exports.addAmountReservation = async(req, res, next) => {
-    const {Marina, Pedestal, Berth, Reservation, Docking, Transaction} = models;
+exports.addAmount = async(req, res, next) => {
+    const {Docking, Transaction} = models;
     const { dockingId } = req.params;
     const { amount } = req.body;
     const { userId } = req.userData;
@@ -84,7 +84,7 @@ exports.addAmountReservation = async(req, res, next) => {
         if (docking) {
             Transaction.create({
                 dockingId: docking.id,
-                reservationId: reservationId,
+                reservationId: docking.reservationId,
                 amount: amount,
                 userId: userId
             }).then(transaction => {
