@@ -1,6 +1,6 @@
 var mqtt = require('mqtt')
 const models = require('./api/models');
-const sequelize = require('./db');
+// const sequelize = require('./db');
 // var pg = require('pg');
 
 // var conString = "postgres://cmiatonx:pqPX9v4FEysA5T-PwJjJGi3Bdc2oxto4@horton.elephantsql.com/cmiatonx";
@@ -12,6 +12,7 @@ var client  = mqtt.connect('mqtt://m20.cloudmqtt.com', {username: 'xvwpkpzb', pa
 client.on('connect', function () {
     client.subscribe('consumption');
     client.subscribe('getInfos');
+    client.publish('getInfos', 'info');
 });
   
 client.on('message', async(topic, message) => {
@@ -20,14 +21,39 @@ client.on('message', async(topic, message) => {
         const waterConsumption = jsonMessage.water;
         const electricityConsumption = jsonMessage.electricity;
         const berthId = jsonMessage.pedestal_id;
-        if (waterConsumption !== 0 || electricityConsumption !== 0) {
 
-            const docking = await models.Docking.findOne({where: {berthId: berthId, isClosed: false}});
-            if (docking && (docking.waterConsumption !== waterConsumption || docking.electricityConsumption !== electricityConsumption)) {
-                docking.waterConsumption = waterConsumption;
-                docking.electricityConsumption = electricityConsumption;
-                docking.save().then(() => {}).catch(err => console.log(err));
+
+        const query = `
+        select d.*
+        from 
+            dockings d,
+            reservations r,
+            berths b
+        where
+            d."reservationId" = r.id and
+            r."berthId" = b.id and
+            b.id = ? and d."isClosed" = false;
+        `
+
+        sequelize.query(query, {replacements: [berthId], type: sequelize.QueryTypes.SELECT, model: models.Docking})
+        .then(result => {
+            if (result.length > 0) {
+                const docking = result[0];
+                if (docking && (docking.waterConsumption !== waterConsumption || docking.electricityConsumption !== electricityConsumption)) {
+                    docking.waterConsumption = waterConsumption;
+                    docking.electricityConsumption = electricityConsumption;
+                    docking.save().then(() => {}).catch(err => console.log(err));
+                }
             }
+        }).catch(err => console.log(err));
+
+            // const docking = await models.Docking.findOne({include: [ models.Reservation ]}, {where: {berthId: berthId, isClosed: false}});
+            // console.log(docking)
+            // if (docking && (docking.waterConsumption !== waterConsumption || docking.electricityConsumption !== electricityConsumption)) {
+            //     docking.waterConsumption = waterConsumption;
+            //     docking.electricityConsumption = electricityConsumption;
+            //     docking.save().then(() => {}).catch(err => console.log(err));
+            // }
 
             // models.BerthConsumption.create({
             //     berthId: berthId,
@@ -43,12 +69,11 @@ client.on('message', async(topic, message) => {
             // berth.electricity = elec;
             // berth.save().then(() => {
             // }).catch(err => console.log(err));
-        }
     }
 
     if (topic === 'getInfos') {
         const msg = (message.toString('utf8'));
-        console.log(msg)
+        // console.log(msg)
     }
 
 });

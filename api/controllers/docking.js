@@ -49,10 +49,19 @@ exports.closeDocking = async(req, res, next) => {
     const {Docking} = models;
     const { marinaId, dockingId } = req.params;
     try {
-        const docking = await Docking.findOne({where: {id: dockingId}});
+        const docking = await Docking.findOne({include: [ Reservation ]}, {where: {id: dockingId}});
         docking.isClosed = true;
         docking.save().then(() => {
-            res.status(200).json(docking);
+            const berthId = docking.reservation.berthId;
+            Berth.findOne({where: {id: berthId}}).then(berth => {
+                berth.isElectricityEnabled = false;
+                berth.isWaterEnabled = false;
+                berth.save().then(() => {
+                    const buf = Buffer.from('reset');
+                    client.publish(berth.id, buf);
+                    res.status(200).json(docking);
+                })
+            }).catch(err => error(res, err.message));;
         }).catch(err => error(res, err.message));
     } catch(err) {
         return error(res, err.message);
