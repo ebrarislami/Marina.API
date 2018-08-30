@@ -12,7 +12,8 @@ var client  = mqtt.connect('mqtt://m20.cloudmqtt.com', {username: 'xvwpkpzb', pa
 client.on('connect', function () {
     client.subscribe('consumption');
     client.subscribe('getInfos');
-    client.publish('getInfos', 'info');
+    // client.publish('getInfos', 'reset');
+    // client.publish('getInfos', 'info');
 });
   
 client.on('message', async(topic, message) => {
