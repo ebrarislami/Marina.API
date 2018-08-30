@@ -47,7 +47,7 @@ exports.getMarinaDockings = async(req, res, next) => {
 
 exports.closeDocking = async(req, res, next) => {
     const {Docking, Reservation, Berth} = models;
-    const { marinaId, dockingId } = req.params;
+    const { dockingId } = req.params;
     try {
         const docking = await Docking.findOne({where: {id: dockingId}, include: [ Reservation ]});
         docking.isClosed = true;
