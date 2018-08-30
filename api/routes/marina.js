@@ -27,9 +27,9 @@ router.get('/:marinaId/reservations/:reservationId', ReservationController.getRe
 router.get('/:marinaId/reservations/:reservationId/accept', ReservationController.acceptReservation);
 router.get('/:marinaId/reservations/:reservationId/decline', ReservationController.declineReservation);
 router.post('/:marinaId/reservations/:reservationId/start', isAuth, ReservationController.startReservation);
-router.post('/:marinaId/reservations/:reservationId/addAmount', isAuth, ReservationController.addAmountReservation);
 
-router.get('/:marinaId/dockings', DockingController.getMarinaDockings);
-router.get('/:marinaId/dockings/:dockingId/close', DockingController.closeDocking);
+router.get('/:marinaId/dockings', isAuth, DockingController.getMarinaDockings);
+router.post('/:marinaId/dockings/:dockingId/addAmount', isAuth, DockingController.addAmountReservation);
+router.get('/:marinaId/dockings/:dockingId/close', isAuth, DockingController.closeDocking);
 
 module.exports = router;

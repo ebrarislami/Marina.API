@@ -200,34 +200,3 @@ exports.startReservation = async(req, res, next) => {
     }
 };
 
-exports.addAmountReservation = async(req, res, next) => {
-    const {Marina, Pedestal, Berth, Reservation, Docking, Transaction} = models;
-    const { reservationId } = req.params;
-    const { amount } = req.body;
-    const { userId } = req.userData;
-
-    if (!amount) {
-        return error(res, "Amount should be greater than 0");
-    }
-
-    try {
-        const docking = await Docking.findOne({where: {reservationId: reservationId}});
-
-        if (docking) {
-            Transaction.create({
-                dockingId: docking.id,
-                reservationId: reservationId,
-                amount: amount,
-                userId: userId
-            }).then(transaction => {
-                res.status(200).json(transaction);
-            }).catch(err => {
-                return error(res, err.message);
-            });
-        } else {
-            return error(res, "Docking not found!");
-        }
-    } catch(err) {
-        return error(res, err.message);
-    }
-};
