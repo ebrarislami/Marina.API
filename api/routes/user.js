@@ -8,6 +8,7 @@ const isAuth = require('../middleware/check-auth');
 router.get('/', UserController.getUsers);
 router.get('/:userId/reservations', isAuth, ReservationController.getUserReservations);
 router.get('/:userId/transactions', isAuth, UserController.getUserTransactions);
+router.get('/:userId/dockings', isAuth, UserController.getUserDockings);
 router.post('/:userId/yacht', UserController.createUserYacht);
 
 module.exports = router;
