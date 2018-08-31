@@ -10,15 +10,60 @@ const Connection = require('../models/connections');
 const client = require('../../mqtt');
 
 exports.getPedestalBerths = async(req, res, next) => {
-    const { pedestalId } = req.params;
+    const { pedestalId, marinaId } = req.params;
     const { Pedestal, Berth } = models;
-    try {
-        const berths = await Berth.findAll({where: {pedestalId: pedestalId}});
-        res.status(200).json(berths);
+    const { role, userId } = req.userData;
+
+    if (role === 'USER') {
+        sequelize.query(`
+        select b.*
+        from 
+            dockings d,
+            users u,
+            reservations r,
+            pedestals p,
+            berths b,
+            marinas m
+        where
+            r."userId" = u.id and
+            d."reservationId" = r.id and
+            r."berthId" = b.id and
+            b."pedestalId" = p.id and
+            p."marinaId" = m.id and
+            u.id = ?
+        group by b.id
+        `, { replacements: [userId], type: sequelize.QueryTypes.SELECT })
+        .then(result => {
+            res.status(200).json(result);
+        }).catch(err => {
+            return error(res, err.message);
+        });
+    } else {
+        sequelize.query(`
+        select b.*, m.id as marinaId
+        from 
+        berths b,
+        pedestals p,
+        marinas m
+        where
+            b."pedestalId" = p.id and
+            p."marinaId" = m.id and
+            m.id = ?;
+        `, { replacements: [marinaId], type: sequelize.QueryTypes.SELECT })
+        .then(result => {
+            res.status(200).json(result);
+        }).catch(err => {
+            return error(res, err.message);
+        });
     }
-    catch(err) {
-        return error(res, err.message);
-    }
+
+    // try {
+    //     const berths = await Berth.findAll({where: {pedestalId: pedestalId}});
+    //     res.status(200).json(berths);
+    // }
+    // catch(err) {
+    //     return error(res, err.message);
+    // }
 };
 
 exports.getMarinaBerths = async(req, res, next) => {

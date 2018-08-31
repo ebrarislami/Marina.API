@@ -58,6 +58,7 @@ exports.closeDocking = async(req, res, next) => {
             Berth.findOne({where: {id: berthId}}).then(berth => {
                 berth.isElectricityEnabled = false;
                 berth.isWaterEnabled = false;
+                berth.isAvailable = true;
                 berth.save().then(() => {
                     const buf = Buffer.from('reset');
                     client.publish(berth.id, buf);

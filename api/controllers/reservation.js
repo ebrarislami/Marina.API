@@ -134,12 +134,16 @@ exports.getBerthReservations = async(req, res, next) => {
 };
 
 exports.acceptReservation = async(req, res, next) => {
-    const { Reservation } = models;
+    const { Reservation, Berth } = models;
     const { reservationId } = req.params;
     try {
         const reservation = await Reservation.findOne({where: {id: reservationId}});
         reservation.isConfirmed = true;
         reservation.save().then(() => {
+            Berth.findOne({where: {id: reservation.berthId}}).then(berth => {
+                berth.isAvailable = false;
+                berth.save().then({});
+            });
             res.status(200).json(reservation);
         }).catch(err => error(res, err.message));
     } catch(err) {
