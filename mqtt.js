@@ -42,11 +42,10 @@ client.on('message', async(topic, message) => {
             if (result.length > 0) {
                 const docking = result[0];
                 if (docking) {
-                    docking.waterConsumption = waterConsumption;
-                    docking.electricityConsumption = electricityConsumption;
+                    docking.waterConsumption += waterConsumption;
+                    docking.electricityConsumption += electricityConsumption;
                     docking.save().then(() => {
                         const berthId = docking.berthId;
-                        console.log(berthId)
                         models.Berth.findOne({where: {id: berthId}}).then(berth => {
                             berth.isWaterEnabled = isWaterEnabled;
                             berth.isElectricityEnabled = isElectricityEnabled;
