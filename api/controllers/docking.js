@@ -6,9 +6,10 @@ const client = require('../../mqtt');
 exports.getMarinaDockings = async(req, res, next) => {
     const {Marina, Pedestal, Berth, Reservation, Docking, Transaction} = models;
     const { marinaId } = req.params;
+    const { userId, role } = req.userData;
     const buf = Buffer.from('info');
     client.publish('getInfos', buf);
-    var options = { replacements: [marinaId], type: sequelize.QueryTypes.SELECT, model: Docking,
+    var options = { replacements: [marinaId, userId], type: sequelize.QueryTypes.SELECT, model: Docking,
         hasJoin: true,
         include: [{
             model: Transaction
@@ -16,7 +17,7 @@ exports.getMarinaDockings = async(req, res, next) => {
     };
     Docking._validateIncludedElements(options);
 
-    const query = `
+    const queryAdmin = `
         select d.*, SUM(t.amount) as amount, u."fullName", r."fromDate", r."toDate", p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.id as berthid, b.name as berthName, b."isWaterEnabled" as water, b."isElectricityEnabled" as electricity
         from 
             dockings d,
@@ -37,14 +38,47 @@ exports.getMarinaDockings = async(req, res, next) => {
         GROUP BY d.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b.id, b."isWaterEnabled", b."isElectricityEnabled";
     `
 
-    setTimeout(() => {
-        sequelize.query(query, options)
-        .then(result => {
-            res.status(200).json(result);
-        }).catch(err => {
-            return error(res, err.message);
-        });
-    }, 100);
+    const queryUser = `
+    select d.*, SUM(t.amount) as amount, u."fullName", r."fromDate", r."toDate", p.id as pedestalId, m.id as marinaid, p.name as pedestalName, b.id as berthid, b.name as berthName, b."isWaterEnabled" as water, b."isElectricityEnabled" as electricity
+    from 
+        dockings d,
+        users u,
+        reservations r,
+        pedestals p,
+        berths b,
+        marinas m,
+        transactions t
+    where
+        r."userId" = u.id and
+        d."reservationId" = r.id and
+        r."berthId" = b.id and
+        b."pedestalId" = p.id and
+        p."marinaId" = m.id and
+        t."dockingId" = d.id and
+        m.id = ? and r."userId" = ?
+    GROUP BY d.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b.id, b."isWaterEnabled", b."isElectricityEnabled";
+`
+
+    if (role === 'User') {
+        setTimeout(() => {
+            sequelize.query(queryUser, options)
+            .then(result => {
+                res.status(200).json(result);
+            }).catch(err => {
+                return error(res, err.message);
+            });
+        }, 100);
+    } else {
+        setTimeout(() => {
+            sequelize.query(queryAdmin, options)
+            .then(result => {
+                res.status(200).json(result);
+            }).catch(err => {
+                return error(res, err.message);
+            });
+        }, 100);
+    }
+
 };
 
 exports.closeDocking = async(req, res, next) => {
