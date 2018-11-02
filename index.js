@@ -62,12 +62,11 @@ app.use((error, req, res, next) => {
 });
 
 server.listen(PORT, () => console.log('Server is running'));
-console.log("Hello first commit");
 // io.on('connection', (socket) => {
 //     console.log('New User connected')
 // });
 
-// models.sequelize.sync().then(() => {
+// models.sequelize.sync({force: true}).then(() => {
 //     server.listen(PORT, () => {
 //       console.log('Server is up and running');
 //     });
