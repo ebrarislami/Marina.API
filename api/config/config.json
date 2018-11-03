@@ -5,13 +5,5 @@
     "database": "cmiatonx",
     "host": "horton.elephantsql.com",
     "dialect": "postgres"
-  },
-  
-  "production": {
-    "username": "cmiatonx",
-    "password": "pqPX9v4FEysA5T-PwJjJGi3Bdc2oxto4",
-    "database": "cmiatonx",
-    "host": "horton.elephantsql.com",
-    "dialect": "postgres"
   }
 }

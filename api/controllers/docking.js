@@ -35,7 +35,7 @@ exports.getMarinaDockings = async(req, res, next) => {
             p."marinaId" = m.id and
             t."dockingId" = d.id and
             m.id = ?
-        GROUP BY d.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b.id, b."isWaterEnabled", b."isElectricityEnabled";
+        GROUP BY b.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b.id, b."isWaterEnabled", b."isElectricityEnabled";
     `
 
     const queryUser = `
@@ -56,7 +56,7 @@ exports.getMarinaDockings = async(req, res, next) => {
         p."marinaId" = m.id and
         t."dockingId" = d.id and
         m.id = ? and r."userId" = ?
-    GROUP BY d.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b.id, b."isWaterEnabled", b."isElectricityEnabled";
+    GROUP BY b.id, u."fullName", r."fromDate", r."toDate", p.id, m.id, p.name, b.name, b.id, b."isWaterEnabled", b."isElectricityEnabled";
 `
 
     if (role === 'User') {
