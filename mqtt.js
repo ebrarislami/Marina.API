@@ -51,7 +51,7 @@ client.on("message", async (topic, message) => {
       .then(result => {
         if (result.length > 0) {
           const docking = result[0];
-          console.log("Dockiiing ", docking);
+          //console.log("Dockiiing ", docking);
           if (docking) {
             docking.waterConsumption += waterConsumption;
             docking.electricityConsumption += electricityConsumption;
@@ -59,10 +59,10 @@ client.on("message", async (topic, message) => {
               .save()
               .then(() => {
                 const berthId = docking.berthId;
-                console.log("Berth ID: ", berthId);
+                //console.log("Berth ID: ", berthId);
                 models.Berth.findOne({ where: { id: berthId } })
                   .then(berth => {
-                    console.log("Vlerant", berth);
+                    //console.log("Vlerant", berth);
                     berth.isWaterEnabled = isWaterEnabled;
                     berth.isElectricityEnabled = isElectricityEnabled;
                     berth
