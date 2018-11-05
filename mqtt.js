@@ -59,18 +59,20 @@ client.on("message", async (topic, message) => {
               .save()
               .then(() => {
                 const berthId = docking.berthId;
-                //console.log("Berth ID: ", berthId);
-                models.Berth.findOne({ where: { id: berthId } })
-                  .then(berth => {
-                    //console.log("Vlerant", berth);
-                    berth.isWaterEnabled = isWaterEnabled;
-                    berth.isElectricityEnabled = isElectricityEnabled;
-                    berth
-                      .save()
-                      .then(() => {})
-                      .catch(err => console.log(err));
-                  })
-                  .catch(err => console.log(err));
+                if (typeof berthId != "undefined" && berthId) {
+                  //console.log(" 1 ------ Docking ID: ", berthId);
+                  models.Berth.findOne({ where: { id: berthId } })
+                    .then(berth => {
+                      // console.log(" 2 ----- *****Berdh ID   ", berth);
+                      berth.isWaterEnabled = isWaterEnabled;
+                      berth.isElectricityEnabled = isElectricityEnabled;
+                      berth
+                        .save()
+                        .then(() => {})
+                        .catch(err => console.log(err));
+                    })
+                    .catch(err => console.log(err));
+                }
               })
               .catch(err => console.log(err));
           }
