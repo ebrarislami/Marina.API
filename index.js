@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const Sequelize = require('sequelize');
 const sequelize = require('./db');
-const mongo = require('./mongodb');
+// const mongo = require('./mongodb');
 const models = require('./api/models');
 require('dotenv').config()
 // app.set('socketio', io);
@@ -73,6 +73,7 @@ server.listen(PORT, () => console.log('Server is running'));
 // });
 
 //  
-// models.Docking.sync({alter: true});
+// models.LogsActive.sync({alter: true});
+// models.LogsError.sync({alter: true});
 
 module.exports = app;

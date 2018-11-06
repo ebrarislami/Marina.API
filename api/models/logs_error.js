@@ -1,11 +1,17 @@
-'use strict';
-module.exports = (sequelize, DataTypes) => {
-  const logs_error = sequelize.define('logs_error', {
-    date: DataTypes.DATE,
-    berthId: DataTypes.STRING
-  }, {});
-  logs_error.associate = models => {
-    logs_error.belongsTo(models.Berth);
+const logsError = (sequelize, DataTypes) => {
+  const LogsError = sequelize.define('logs_error', {
+    data: {
+      type: DataTypes.STRING,
+    },
+  });
+
+  LogsError.associate = models => {
+    LogsError.belongsTo(models.Berth, {
+      foreignKey: 'berthId'
+    });
   };
-  return logs_error;
+
+  return LogsError;
 };
+
+module.exports = logsError;

@@ -13,7 +13,9 @@ const models = {
     Docking: sequelize.import('./docking'),
     BerthConsumption: sequelize.import('./berth_consumption'),
     Transaction: sequelize.import('./transaction'),
-    Test: sequelize.import('./test')
+    Test: sequelize.import('./test'),
+    LogsActive: sequelize.import('./logs_active'),
+    LogsError: sequelize.import('./logs_error')
 }
 
 

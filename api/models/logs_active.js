@@ -1,11 +1,17 @@
-'use strict';
-module.exports = (sequelize, DataTypes) => {
-  const logs_active = sequelize.define('logs_active', {
-    date: DataTypes.DATE,
-    berthId: DataTypes.STRING
-  }, {});
-  logs_active.associate = models => {
-    logs_active.belongsTo(models.Berth);
+const logsActive = (sequelize, DataTypes) => {
+  const LogsActive = sequelize.define('logs_active', {
+    data: {
+      type: DataTypes.STRING,
+    },
+  });
+
+  LogsActive.associate = models => {
+    LogsActive.belongsTo(models.Berth, {
+      foreignKey: 'berthId'
+    });
   };
-  return logs_active;
+
+  return LogsActive;
 };
+
+module.exports = logsActive;
