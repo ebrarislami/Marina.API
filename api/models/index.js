@@ -15,7 +15,8 @@ const models = {
     Transaction: sequelize.import('./transaction'),
     Test: sequelize.import('./test'),
     LogsActive: sequelize.import('./logs_active'),
-    LogsError: sequelize.import('./logs_error')
+    LogsError: sequelize.import('./logs_error'),
+    LogsStatus: sequelize.import('./logs_status')
 }
 
 

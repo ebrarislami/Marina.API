@@ -74,6 +74,6 @@ server.listen(PORT, () => console.log('Server is running'));
 
 //  
 // models.LogsActive.sync({alter: true});
-// models.LogsError.sync({alter: true});
+// models.LogsStatus.sync({alter: true});
 
 module.exports = app;
