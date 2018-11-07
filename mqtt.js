@@ -16,6 +16,11 @@ var client = mqtt.connect(
 client.on("connect", function() {
   client.subscribe("consumption");
   client.subscribe("getInfos");
+  client.subscribe("6088f220-7f7c-11e8-bf94-39e4e1b78ae0");
+  client.subscribe("60891930-7f7c-11e8-bf94-39e4e1b78ae0");
+  client.subscribe("6088f221-7f7c-11e8-bf94-39e4e1b78ae0");
+  client.subscribe("60891931-7f7c-11e8-bf94-39e4e1b78ae0");
+
   // client.publish('6088f220-7f7c-11e8-bf94-39e4e1b78ae0', 'reset');
   client.publish("getInfos", "infoMQTT");
   console.log("Connected to MQTT...");
@@ -102,11 +107,56 @@ client.on("message", async (topic, message) => {
     // berth.electricity = elec;
     // berth.save().then(() => {
     // }).catch(err => console.log(err));
-  }
 
-  if (topic === "getInfos") {
-    const msg = message.toString("utf8");
-    // console.log(msg)
+    LogsActive = models.LogsActive;
+
+    LogsActive.create({
+      berthId: berthId,
+      data:
+        "isWaterEnabled: " +
+        isWaterEnabled +
+        " | " +
+        "isElectricityEnabled: " +
+        isElectricityEnabled +
+        " | " +
+        "waterConsumption: " +
+        waterConsumption +
+        " | " +
+        "electricityConsumption: " +
+        electricityConsumption
+    });
+  } else if (topic === "getInfos") {
+    console.log("Get info topiic");
+  } else {
+    console.log("     Got in!!!! ");
+
+    LogsStatus = models.LogsStatus;
+    const jsonMessage = JSON.parse(message.toString("utf8"));
+
+    waterState = jsonMessage.water || null;
+    electricityState = jsonMessage.electricity || null;
+
+    eStatus = false;
+    wStatus = false;
+    if (electricityState === "On") {
+      eStatus = true;
+    }
+
+    if (waterState === "On") {
+      wStatus = true;
+    }
+
+    if (electricityState) {
+      LogsStatus.create({
+        berthId: topic,
+        electricityStatus: eStatus
+      });
+    } else {
+      LogsStatus.create({
+        berthId: topic,
+        waterStatus: wStatus
+      });
+    }
   }
 });
 
@@ -116,11 +166,27 @@ cron.schedule("*/20 * * * * *", function() {
   console.log("running a task every 20 seconds");
 });
 
-//insert into logs every 20 sec
+//insert into logs every 1 min
 cron.schedule("1 * * * * *", function() {
-  setTimeout(() => {
-    client.publish("getInfos", "running a task every 1 min");
-    console.log("running a task every 1 min");
-  }, 2500);
+  const query = `
+      SELECT count(*) as cnt
+      FROM logs_actives
+
+        `;
+
+  sequelize.query(query).then(result => {
+    if (result.length > 1) {
+      LogsActive.destroy({
+        where: {},
+        truncate: true
+      });
+    } else {
+      LogsError = models.LogsError;
+      LogsError.create({
+        berthId: "60891930-7f7c-11e8-bf94-39e4e1b78ae0",
+        data: "Error not working"
+      });
+    }
+  });
 });
 module.exports = client;
