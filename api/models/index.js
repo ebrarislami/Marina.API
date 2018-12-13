@@ -16,7 +16,8 @@ const models = {
     Test: sequelize.import('./test'),
     LogsActive: sequelize.import('./logs_active'),
     LogsError: sequelize.import('./logs_error'),
-    LogsStatus: sequelize.import('./logs_status')
+    LogsStatus: sequelize.import('./logs_status'),
+    LogsStatusConflict: sequelize.import('./logs_status_conflict')
 }
 
 
