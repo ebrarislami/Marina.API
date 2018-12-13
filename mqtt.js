@@ -29,12 +29,13 @@ client.on("connect", function() {
 client.on("message", async (topic, message) => {
   if (topic === "consumption") {
     const jsonMessage = JSON.parse(message.toString("utf8"));
+    //console.log('JSON MESSAGE:', jsonMessage);
     const waterConsumption = jsonMessage.water;
     const electricityConsumption = jsonMessage.electricity;
     const berthId = jsonMessage.pedestal_id;
     const isWaterEnabled = jsonMessage.waterStatus;
     const isElectricityEnabled = jsonMessage.electricityStatus;
-
+    //console.log('****************************************************berthid:', berthId);
     const query = `
         select d.*, b.id as "berthId"
         from
@@ -62,23 +63,27 @@ client.on("message", async (topic, message) => {
             docking.electricityConsumption += electricityConsumption;
             docking
               .save()
-              .then(() => {
-                const berthId = docking.berthId;
-                if (typeof berthId != "undefined" && berthId) {
-                  //console.log(" 1 ------ Docking ID: ", berthId);
-                  models.Berth.findOne({ where: { id: berthId } })
-                    .then(berth => {
-                      // console.log(" 2 ----- *****Berdh ID   ", berth);
-                      berth.isWaterEnabled = isWaterEnabled;
-                      berth.isElectricityEnabled = isElectricityEnabled;
-                      berth
-                        .save()
-                        .then(() => {})
-                        .catch(err => console.log(err));
-                    })
-                    .catch(err => console.log(err));
-                }
-              })
+              //.then(() => {
+
+              //  console.log('--------------------docking:', docking);
+              //  console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&docking is:', docking.dataValues.berthId);
+
+              // const berthId = docking.berthId;
+              // if (typeof berthId != "undefined" && berthId) {
+              //   //console.log(" 1 ------ Docking ID: ", berthId);
+              //   models.Berth.findOne({ where: { id: berthId } })
+              //     .then(berth => {
+              //       // console.log(" 2 ----- *****Berdh ID   ", berth);
+              //       berth.isWaterEnabled = isWaterEnabled;
+              //       berth.isElectricityEnabled = isElectricityEnabled;
+              //       berth
+              //         .save()
+              //         .then(() => {})
+              //         .catch(err => console.log(err));
+              //     })
+              //     .catch(err => console.log(err));
+              // }
+              //})
               .catch(err => console.log(err));
           }
         }
@@ -125,10 +130,72 @@ client.on("message", async (topic, message) => {
         "electricityConsumption: " +
         electricityConsumption
     });
+
+    if (electricityConsumption > 0 || waterConsumption > 0) {
+      BerthConsumption = models.BerthConsumption;
+
+      BerthConsumption.create({
+        berthId: berthId,
+        water: waterConsumption,
+        electricity: electricityConsumption
+      });
+    }
+
+    models.Berth.findOne({ where: { id: berthId } })
+      .then(berth => {
+        if (
+          berth.dataValues.isWaterEnabled != isWaterEnabled ||
+          berth.dataValues.isElectricityEnabled != isElectricityEnabled
+        ) {
+          console.log("inside 1 ****************************************");
+          LogsStatusConflict = models.LogsStatusConflict;
+
+          LogsStatusConflict.create({
+            berthId: berthId,
+            db_e_stat: berth.dataValues.isElectricityEnabled,
+            mq_e_stat: isElectricityEnabled,
+            db_w_stat: berth.dataValues.isWaterEnabled,
+            mq_w_stat: isWaterEnabled
+          });
+
+          if (
+            berth.dataValues.isWaterEnabled != isWaterEnabled &&
+            berth.dataValues.isWaterEnabled == true
+          ) {
+            console.log("inside 2 ****************************************");
+            client.publish(berthId, '{"water":"On"}');
+          }
+
+          if (
+            berth.dataValues.isWaterEnabled != isWaterEnabled &&
+            berth.dataValues.isWaterEnabled == false
+          ) {
+            console.log("inside 3 ****************************************");
+            client.publish(berthId, '{"water":"Off"}');
+          }
+
+          if (
+            berth.dataValues.isElectricityEnabled != isElectricityEnabled &&
+            berth.dataValues.isElectricityEnabled == true
+          ) {
+            console.log("inside 4 ****************************************");
+            client.publish(berthId, '{"electricity":"On"}');
+          }
+
+          if (
+            berth.dataValues.isElectricityEnabled != isElectricityEnabled &&
+            berth.dataValues.isElectricityEnabled == false
+          ) {
+            console.log("inside 5 ****************************************");
+            client.publish(berthId, '{"electricity":"Off"}');
+          }
+        }
+      })
+      .catch(err => console.log(err));
   } else if (topic === "getInfos") {
     console.log("Get info topiic");
   } else {
-    console.log("     Got in!!!! ");
+    console.log("Got in!!!! ");
 
     LogsStatus = models.LogsStatus;
     const jsonMessage = JSON.parse(message.toString("utf8"));
@@ -161,7 +228,9 @@ client.on("message", async (topic, message) => {
 });
 
 //insert into logs every 20 sec
-cron.schedule("*/20 * * * * *", function() {
+cron.schedule("*/10 * * * * *", function() {
+  // client.publish("60891930-7f7c-11e8-bf94-39e4e1b78ae0", "{\"water\":\"Off\"}");
+
   client.publish("getInfos", "running a task every 20 seconds");
   console.log("running a task every 20 seconds");
 });
