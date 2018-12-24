@@ -114,17 +114,6 @@ exports.getStats = async (req, res, next) => {
 };
 
 exports.getHourConsumption = async (req, res, next) => {
-  //const { day } = req.params;
-  // const { BerthConsumption } = models;
-  // try {
-  //   const electricityConsumption = await BerthConsumption.sum("electricity", {
-  //     where: {
-  //       createdAt: {
-  //         [Op.gte]: moment().startOf("week")
-  //         //[Op.lte]: moment().startOf("week")
-  //       }
-  //     }
-  //   });
   const query = `SELECT  sum(water) s_water, sum(electricity) s_electricity, "berthId", date_trunc('hour', "createdAt") dates 
     FROM public.berth_consumptions 
     group by "berthId", date_trunc('hour', "createdAt")`;
@@ -137,13 +126,25 @@ exports.getHourConsumption = async (req, res, next) => {
       }
     })
     .catch(err => console.log(err));
+};
 
-  // const data = {
-  //   electricityConsumption: electricityConsumption / 1000
-  //   // waterConsumption: waterConsumption
-  // };
+exports.getBerthHourConsumption = async (req, res, next) => {
+  const { berthID } = req.params;
+  const query = `SELECT  sum(water) s_water, sum(electricity) s_electricity, "berthId", date_trunc('hour', "createdAt") dates 
+  FROM public.berth_consumptions 
+  where "berthId" = ? 
+  group by "berthId", date_trunc('hour', "createdAt") 
+  order by date_trunc('hour', "createdAt");`;
 
-  // } catch (err) {
-  //   return error(res, err.message);
-  // }
+  sequelize
+    .query(query, {
+      replacements: [berthID],
+      type: sequelize.QueryTypes.SELECT
+    })
+    .then(result => {
+      if (result.length > 0) {
+        res.status(200).json(result);
+      }
+    })
+    .catch(err => console.log(err));
 };
