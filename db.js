@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
-sequelize = new Sequelize('d8j2i75fts1o10', 'ctedjzxtbdxilu', 'd22e7e08d80d5d127cd6414588e9e4b16998e4c4ba8748908e751d81347f9360', {
-        host: 'ec2-23-21-246-25.compute-1.amazonaws.com',
+sequelize = new Sequelize('d5qf1o2r6787oh', 'qwitotgjyertcb', 'b5547cebd6201dd1f65f29737b0ca309eb0637c38b96b8e5060fc5af0f1c6819', {
+        host: 'ec2-107-20-237-78.compute-1.amazonaws.com',
         dialect: 'postgres',
       
         pool: {
