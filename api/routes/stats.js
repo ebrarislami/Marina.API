@@ -5,6 +5,6 @@ const isAdmin = require("../middleware/check-admin");
 const isAuth = require("../middleware/check-auth");
 
 router.get("/", Stats.getStats);
-router.get("/:day", Stats.getCustomDay);
+router.get("/hour", Stats.getHourConsumption);
 
 module.exports = router;

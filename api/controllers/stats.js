@@ -2,27 +2,49 @@ const models = require("../models");
 const error = require("../helpers/error-handler");
 const moment = require("moment");
 const { Op } = require("sequelize");
+const sequelize = require("../../db");
 
 exports.getStats = async (req, res, next) => {
-  const { Docking, Berth } = models;
+  const { BerthConsumption, Docking, Berth } = models;
   try {
-    const waterConsumption = await Docking.sum("waterConsumption", {
+    const waterConsumption = await BerthConsumption.sum("water", {
       where: {
-        updatedAt: {
+        createdAt: {
           [Op.gte]: moment().startOf("month")
-        },
-        isClosed: false
+        }
+        //isClosed: false
       }
     });
 
-    const electricityConsumption = await Docking.sum("electricityConsumption", {
+    const electricityConsumption = await BerthConsumption.sum("electricity", {
       where: {
-        updatedAt: {
+        createdAt: {
           [Op.gte]: moment().startOf("month")
-        },
-        isClosed: false
+        }
+        //isClosed: false
       }
     });
+
+    const todayWaterConsumption = await BerthConsumption.sum("water", {
+      where: {
+        createdAt: {
+          [Op.gte]: moment().startOf("day")
+        }
+        //isClosed: false
+      }
+    });
+
+    const todayElectricityConsumption = await BerthConsumption.sum(
+      "electricity",
+      {
+        where: {
+          createdAt: {
+            [Op.gte]: moment().startOf("day")
+          }
+          //isClosed: false
+        }
+      }
+    );
 
     const activeDockings = await Docking.findAndCountAll({
       where: {
@@ -69,8 +91,10 @@ exports.getStats = async (req, res, next) => {
     });
 
     const data = {
-      water: waterConsumption * (1 / 310),
-      electricity: electricityConsumption / 1000,
+      thisMonthWater: waterConsumption * (1 / 310),
+      thisMonthElectricity: electricityConsumption / 1000,
+      todayWater: todayWaterConsumption * (1 / 310),
+      todayElectricity: todayElectricityConsumption / 1000,
       totalDockings: activeDockings.count + inActiveDockings.count,
       activeDockings: activeDockings.count,
       inActiveDockings: inActiveDockings.count,
@@ -89,41 +113,37 @@ exports.getStats = async (req, res, next) => {
   }
 };
 
-exports.getCustomDay = async (req, res, next) => {
-  const { day } = req.params;
-  const { Marina, MarinaRoles, User, Pedestal, Docking, Berth } = models;
-  try {
-    const electricityConsumption = await Docking.sum("electricityConsumption", {
-      where: {
-        updatedAt: {
-          [Op.lte]: moment()
-            .subtract(day, "days")
-            .toDate(),
-          [Op.gte]: moment()
-            .subtract(day - 1, "days")
-            .toDate()
-        }
-      }
-    });
+exports.getHourConsumption = async (req, res, next) => {
+  //const { day } = req.params;
+  // const { BerthConsumption } = models;
+  // try {
+  //   const electricityConsumption = await BerthConsumption.sum("electricity", {
+  //     where: {
+  //       createdAt: {
+  //         [Op.gte]: moment().startOf("week")
+  //         //[Op.lte]: moment().startOf("week")
+  //       }
+  //     }
+  //   });
+  const query = `SELECT  sum(water) s_water, sum(electricity) s_electricity, "berthId", date_trunc('hour', "createdAt") dates 
+    FROM public.berth_consumptions 
+    group by "berthId", date_trunc('hour', "createdAt")`;
 
-    const waterConsumption = await Docking.sum("waterConsumption", {
-      where: {
-        updatedAt: {
-          [Op.lte]: moment()
-            .subtract(day, "days")
-            .toDate(),
-          [Op.gte]: moment()
-            .subtract(day - 1, "days")
-            .toDate()
-        }
+  sequelize
+    .query(query)
+    .then(result => {
+      if (result.length > 0) {
+        res.status(200).json(result);
       }
-    });
-    const data = {
-      electricityConsumption: electricityConsumption,
-      waterConsumption: waterConsumption
-    };
-    res.status(200).json(data);
-  } catch (err) {
-    return error(res, err.message);
-  }
+    })
+    .catch(err => console.log(err));
+
+  // const data = {
+  //   electricityConsumption: electricityConsumption / 1000
+  //   // waterConsumption: waterConsumption
+  // };
+
+  // } catch (err) {
+  //   return error(res, err.message);
+  // }
 };
