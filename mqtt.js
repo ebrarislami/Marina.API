@@ -237,19 +237,20 @@ cron.schedule("*/10 * * * * *", function() {
 
 //insert into logs every 1 min
 cron.schedule("1 * * * * *", function() {
-        models.LogsActive.count().then(result => {
-          if (result.length > 0) {
-            models.LogsActive.destroy({
-              where: {},
-              truncate: true
-            });
-          } else {
-            LogsError = models.LogsError;
-            LogsError.create({
-              berthId: "60891930-7f7c-11e8-bf94-39e4e1b78ae0",
-              data: "Error not working"
-            });
-          }
-        });
+  models.LogsActive.count().then(result => {
+    //console.log("----Resuult :  ", result);
+    if (result > 0) {
+      models.LogsActive.destroy({
+        where: {},
+        truncate: true
+      });
+    } else {
+      LogsError = models.LogsError;
+      LogsError.create({
+        berthId: "60891930-7f7c-11e8-bf94-39e4e1b78ae0",
+        data: "Error not working"
+      });
+    }
+  });
 });
 module.exports = client;
