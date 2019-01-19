@@ -6,7 +6,7 @@ const checkAuth = require('../middleware/check-auth');
 
 router.post('/login', AuthController.login);
 router.post('/signup', AuthController.signup);
-router.post('/forgotpassword', AuthController.forgotPassword);
-router.get('/resetpassword/:token', AuthController.resetPassword);
+// router.post('/forgotpassword', AuthController.forgotPassword);
+// router.get('/resetpassword/:token', AuthController.resetPassword);
 
 module.exports = router;
